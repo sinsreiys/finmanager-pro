@@ -1,0 +1,43 @@
+-- ============================================================
+-- FINANCIAL MANAGEMENT PRO - Database Schema
+-- Base de datos: finances.db
+-- ============================================================
+
+-- Eliminar tabla si existe (opcional, para reinicio limpio)
+DROP TABLE IF EXISTS transactions;
+
+-- Crear tabla de transacciones
+CREATE TABLE transactions (
+    id TEXT PRIMARY KEY,
+    date TEXT NOT NULL,
+    description TEXT NOT NULL,
+    amount REAL NOT NULL,
+    type TEXT NOT NULL CHECK(type IN ('income', 'expense')),
+    category TEXT NOT NULL
+);
+
+-- Crear índices para búsquedas frecuentes
+CREATE INDEX idx_transactions_date ON transactions(date);
+CREATE INDEX idx_transactions_type ON transactions(type);
+CREATE INDEX idx_transactions_category ON transactions(category);
+
+-- Insertar datos de ejemplo
+INSERT INTO transactions (id, date, description, amount, type, category) VALUES
+('1', '2025-03-01', 'Nómina', 2450.00, 'income', 'Salario'),
+('2', '2025-02-28', 'Supermercado', 185.30, 'expense', 'Comida'),
+('3', '2025-02-27', 'Netflix', 12.99, 'expense', 'Suscripciones'),
+('4', '2025-02-25', 'Venta freelance', 600.00, 'income', 'Freelance'),
+('5', '2025-02-20', 'Gasolina', 45.00, 'expense', 'Transporte'),
+('6', '2025-02-18', 'Cena restaurante', 68.50, 'expense', 'Comida'),
+('7', '2025-02-15', 'Dividendos', 120.00, 'income', 'Inversiones'),
+('8', '2025-02-10', 'Compra ropa', 89.99, 'expense', 'Compras'),
+('9', '2025-02-05', 'Spotify', 9.99, 'expense', 'Suscripciones'),
+('10', '2025-02-01', 'Pago cliente', 350.00, 'income', 'Freelance'),
+('11', '2025-01-28', 'Supermercado', 210.40, 'expense', 'Comida'),
+('12', '2025-01-25', 'Regalo cumpleaños', 50.00, 'expense', 'Otros gastos'),
+('13', '2025-01-20', 'Venta online', 85.00, 'income', 'Otros ingresos'),
+('14', '2025-01-15', 'Gasolina', 42.30, 'expense', 'Transporte'),
+('15', '2025-01-10', 'Netflix', 12.99, 'expense', 'Suscripciones');
+
+-- Verificar inserción
+SELECT COUNT(*) AS total_transactions FROM transactions;

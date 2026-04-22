@@ -1,0 +1,1897 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>FinManager PRO | Dashboard Financiero</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f1f5f9;
+      color: #0f172a;
+      line-height: 1.5;
+      font-size: 15px;
+    }
+
+    /* Temas */
+    body.cream {
+      --bg-primary: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-elevated: #f1f5f9;
+      --text-primary: #0f172a;
+      --text-secondary: #334155;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --accent: #3b82f6;
+      --accent-light: #60a5fa;
+      --shadow: 0 1px 3px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05);
+      --input-bg: #ffffff;
+      --input-border: #cbd5e1;
+      --btn-primary-bg: #3b82f6;
+      --btn-primary-hover: #2563eb;
+    }
+    body.dark {
+      --bg-primary: #0f172a;
+      --bg-card: #1e293b;
+      --bg-elevated: #334155;
+      --text-primary: #f1f5f9;
+      --text-secondary: #cbd5e1;
+      --text-muted: #94a3b8;
+      --border: #334155;
+      --accent: #60a5fa;
+      --accent-light: #93c5fd;
+      --shadow: 0 1px 3px rgba(0,0,0,0.3);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.3);
+      --input-bg: #334155;
+      --input-border: #475569;
+      --btn-primary-bg: #3b82f6;
+      --btn-primary-hover: #60a5fa;
+    }
+    body.blue {
+      --bg-primary: #eef2ff;
+      --bg-card: #ffffff;
+      --bg-elevated: #f8fafc;
+      --text-primary: #1e3a8a;
+      --text-secondary: #3b82f6;
+      --text-muted: #64748b;
+      --border: #cbd5e1;
+      --accent: #3b82f6;
+      --accent-light: #60a5fa;
+      --shadow: 0 1px 3px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05);
+      --input-bg: #ffffff;
+      --input-border: #cbd5e1;
+      --btn-primary-bg: #3b82f6;
+      --btn-primary-hover: #2563eb;
+    }
+    body.cyan {
+      --bg-primary: #ecfeff;
+      --bg-card: #ffffff;
+      --bg-elevated: #f0fdfa;
+      --text-primary: #164e63;
+      --text-secondary: #0891b2;
+      --text-muted: #5b8b9e;
+      --border: #cffafe;
+      --accent: #06b6d4;
+      --accent-light: #22d3ee;
+      --shadow: 0 1px 3px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05);
+      --input-bg: #ffffff;
+      --input-border: #cffafe;
+      --btn-primary-bg: #06b6d4;
+      --btn-primary-hover: #0891b2;
+    }
+    body.purple {
+      --bg-primary: #faf5ff;
+      --bg-card: #ffffff;
+      --bg-elevated: #f3e8ff;
+      --text-primary: #4c1d95;
+      --text-secondary: #8b5cf6;
+      --text-muted: #9ca3af;
+      --border: #e9d5ff;
+      --accent: #8b5cf6;
+      --accent-light: #a78bfa;
+      --shadow: 0 1px 3px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05);
+      --input-bg: #ffffff;
+      --input-border: #e9d5ff;
+      --btn-primary-bg: #8b5cf6;
+      --btn-primary-hover: #7c3aed;
+    }
+
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+    }
+
+    /* Layout principal */
+    .app-shell {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: var(--bg-card);
+      border-right: 1px solid var(--border);
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+      padding: 20px 0;
+      transition: all 0.2s;
+      z-index: 100;
+    }
+
+    .sidebar__logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 20px 20px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+
+    .sidebar__logo-icon {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 18px;
+      color: white;
+    }
+
+    .sidebar__logo-text {
+      font-size: 1.1rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--text-primary), var(--accent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .sidebar__nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 0 12px;
+    }
+
+    .sidebar__section-label {
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      padding: 12px 12px 4px;
+    }
+
+    .sidebar__link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 10px;
+      color: var(--text-secondary);
+      font-weight: 500;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .sidebar__link:hover {
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      transform: translateX(4px);
+    }
+
+    .sidebar__link.active {
+      background: var(--bg-elevated);
+      color: var(--accent);
+      border-left: 3px solid var(--accent);
+    }
+
+    .sidebar__footer {
+      padding: 20px;
+      border-top: 1px solid var(--border);
+      margin-top: 20px;
+    }
+
+    .sidebar__user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 10px;
+    }
+
+    .sidebar__user:hover {
+      background: var(--bg-elevated);
+    }
+
+    .sidebar__avatar {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: white;
+      background-size: cover;
+      background-position: center;
+    }
+
+    /* Topbar */
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 260px;
+      right: 0;
+      height: 64px;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 90;
+    }
+
+    .topbar__title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, var(--text-primary), var(--accent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .topbar__search {
+      position: relative;
+      width: 260px;
+    }
+
+    .topbar__search-input {
+      width: 100%;
+      padding: 7px 14px 7px 36px;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 40px;
+      color: var(--text-primary);
+      font-size: 0.8rem;
+    }
+
+    .topbar__search-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .topbar__search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+
+    .topbar__actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    /* Main content */
+    .main-content {
+      margin-left: 260px;
+      margin-top: 64px;
+      padding: 24px;
+      width: 100%;
+    }
+
+    /* Stats grid */
+    .stats-grid, .loans-grid, .goals-grid, .budgets-grid, .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card, .loan-card, .goal-card, .budget-card, .credit-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 20px;
+      transition: all 0.2s;
+    }
+
+    .stat-card:hover, .loan-card:hover, .goal-card:hover, .budget-card:hover, .credit-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent-light);
+    }
+
+    .stat-card__header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .stat-card__label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .stat-card__icon {
+      font-size: 1.8rem;
+      opacity: 0.7;
+    }
+
+    .stat-card__value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .stat-card__change {
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .stat-card__change.up {
+      background: rgba(16,185,129,0.1);
+      color: #10b981;
+    }
+
+    .stat-card__change.down {
+      background: rgba(239,68,68,0.1);
+      color: #ef4444;
+    }
+
+    .balances-section {
+      background: var(--bg-card);
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+
+    .balances-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-top: 12px;
+    }
+
+    .balance-item {
+      background: var(--bg-elevated);
+      border-radius: 16px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .balance-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .balance-value input {
+      width: 100px;
+      padding: 4px 8px;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 10px;
+      color: var(--text-primary);
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .lists-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .list-card {
+      background: var(--bg-card);
+      border-radius: 20px;
+      padding: 16px;
+    }
+
+    .list-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .transaction-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .transaction-amount.income { color: #10b981; }
+    .transaction-amount.expense { color: #ef4444; }
+
+    .filter-panel {
+      background: var(--bg-card);
+      border-radius: 20px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: flex-end;
+    }
+
+    .filter-panel .form-group {
+      flex: 1;
+      min-width: 120px;
+    }
+
+    .form-label {
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .form-control, select.form-control {
+      width: 100%;
+      padding: 8px 12px;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 12px;
+      color: var(--text-primary);
+      font-size: 0.8rem;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .btn {
+      padding: 7px 16px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.75rem;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-primary {
+      background: var(--btn-primary-bg);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--btn-primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--bg-elevated);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-danger {
+      background: rgba(239,68,68,0.1);
+      color: #ef4444;
+      border: 1px solid rgba(239,68,68,0.2);
+    }
+
+    .btn-sm {
+      padding: 3px 8px;
+      font-size: 0.65rem;
+    }
+
+    .table-wrapper {
+      background: var(--bg-card);
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      overflow-x: auto;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .table th {
+      text-align: left;
+      padding: 12px 16px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .table td {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+    }
+
+    .table tbody tr:hover td {
+      background: var(--bg-elevated);
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal {
+      background: var(--bg-card);
+      border-radius: 24px;
+      width: 90%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal__header {
+      padding: 20px 20px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal__close {
+      background: none;
+      border: none;
+      font-size: 1.3rem;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    .modal__body {
+      padding: 20px;
+    }
+
+    .modal__footer {
+      padding: 16px 20px 20px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .calendar-container {
+      background: var(--bg-card);
+      border-radius: 20px;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+      text-align: center;
+    }
+
+    .calendar-day {
+      background: var(--bg-elevated);
+      border-radius: 10px;
+      padding: 8px 4px;
+      cursor: pointer;
+      font-size: 0.75rem;
+    }
+
+    .calendar-day.has-event {
+      background: var(--accent);
+      color: white;
+    }
+
+    .calendar-day.today {
+      border: 1px solid var(--accent);
+      font-weight: bold;
+    }
+
+    .module-card {
+      background: var(--bg-card);
+      border-radius: 20px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .module-content {
+      background: var(--bg-elevated);
+      padding: 12px;
+      border-radius: 14px;
+      min-height: 100px;
+    }
+
+    .toast-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1100;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .toast {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 10px 16px;
+      border-left: 3px solid var(--accent);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .progress-bar {
+      height: 6px;
+      background: var(--bg-elevated);
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 8px 0;
+    }
+    .progress-fill { height: 100%; background: var(--accent); border-radius: 10px; }
+    .badge-warning { background: rgba(239,68,68,0.1); color: #ef4444; padding: 2px 6px; border-radius: 20px; font-size: 0.65rem; }
+    .text-success { color: #10b981; font-weight: 600; }
+    .text-danger { color: #ef4444; font-weight: 600; }
+
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); position: fixed; z-index: 200; }
+      .sidebar.open { transform: translateX(0); }
+      .topbar, .main-content { margin-left: 0; }
+      .topbar__search { width: 160px; }
+      .stats-grid, .balances-grid, .lists-container { grid-template-columns: 1fr; }
+      .mobile-menu-toggle { display: block; }
+    }
+    .mobile-menu-toggle { display: none; background: none; border: none; font-size: 22px; color: var(--text-primary); cursor: pointer; }
+  </style>
+</head>
+<body>
+<div id="appRoot"></div>
+
+<script>
+  (function(){
+    // ========== VARIABLES GLOBALES ==========
+    let currentUser = null;
+    let users = [];
+    let companies = [];
+    let companyMembers = [];
+    let currentCompanyId = null;
+    let companyData = {};
+    
+    let transactions = [];
+    let uploadedInvoices = [];
+    let createdInvoices = [];
+    let events = [];
+    let budgets = [];
+    let savingsGoals = [];
+    let loans = [];
+    let creditCards = [];
+    let balances = { cash: 0, bank: 0, savings: 0, investments: 0 };
+    let customCategories = { income: ['Salario','Freelance','Inversiones','Regalos','Facturación'], expense: ['Comida','Transporte','Vivienda','Entretenimiento','Salud','Suscripciones','Compras','Facturación'] };
+    
+    const BUDGET_TYPES = {
+      CATEGORY: 'category',
+      LIVE_ALONE: 'live_alone',
+      PETS: 'pets',
+      FAMILY: 'family',
+      LARGE_FAMILY: 'large_family',
+      LEISURE: 'leisure',
+      BUSINESS: 'business',
+      CUSTOM: 'custom'
+    };
+    const BUDGET_TYPE_NAMES = {
+      [BUDGET_TYPES.CATEGORY]: 'Por categoría',
+      [BUDGET_TYPES.LIVE_ALONE]: 'Vivir solo',
+      [BUDGET_TYPES.PETS]: 'Mascotas',
+      [BUDGET_TYPES.FAMILY]: 'Familia (estándar)',
+      [BUDGET_TYPES.LARGE_FAMILY]: 'Familia numerosa',
+      [BUDGET_TYPES.LEISURE]: 'Ocio',
+      [BUDGET_TYPES.BUSINESS]: 'Empresa',
+      [BUDGET_TYPES.CUSTOM]: 'Personalizado'
+    };
+
+    // ========== PERSISTENCIA ==========
+    function loadAllData() {
+      users = JSON.parse(localStorage.getItem('fm_users') || '[]');
+      companies = JSON.parse(localStorage.getItem('fm_companies') || '[]');
+      companyMembers = JSON.parse(localStorage.getItem('fm_companyMembers') || '[]');
+      const storedCompanyData = localStorage.getItem('fm_companyData');
+      if (storedCompanyData) companyData = JSON.parse(storedCompanyData);
+      const storedCurrentUser = localStorage.getItem('fm_currentUser');
+      if (storedCurrentUser) {
+        currentUser = JSON.parse(storedCurrentUser);
+        const storedCompany = localStorage.getItem('fm_currentCompanyId');
+        if (storedCompany && companies.some(c => c.id === storedCompany)) {
+          currentCompanyId = storedCompany;
+        } else if (companies.length > 0) {
+          const member = companyMembers.find(m => m.userId === currentUser.id);
+          if (member) currentCompanyId = member.companyId;
+          else if (companies.length > 0) currentCompanyId = companies[0].id;
+        }
+      }
+      loadCompanyData();
+    }
+
+    function loadCompanyData() {
+      if (!currentCompanyId) return;
+      if (!companyData[currentCompanyId]) {
+        companyData[currentCompanyId] = {
+          transactions: [],
+          uploadedInvoices: [],
+          createdInvoices: [],
+          events: [],
+          budgets: [],
+          savingsGoals: [],
+          loans: [],
+          creditCards: [],
+          balances: { cash: 1250.00, bank: 3500.00, savings: 5200.00, investments: 1500.00 },
+          customCategories: { income: ['Salario','Freelance','Inversiones','Regalos','Facturación'], expense: ['Comida','Transporte','Vivienda','Entretenimiento','Salud','Suscripciones','Compras','Facturación'] },
+          companyProfile: { type: 'individual', businessType: '', specialization: '', employees: 0, capital: 0, annualRevenue: 0, legalForm: '', website: '', phone2: '', address: '', modules: [] }
+        };
+      }
+      transactions = companyData[currentCompanyId].transactions;
+      uploadedInvoices = companyData[currentCompanyId].uploadedInvoices;
+      createdInvoices = companyData[currentCompanyId].createdInvoices;
+      events = companyData[currentCompanyId].events;
+      budgets = companyData[currentCompanyId].budgets;
+      savingsGoals = companyData[currentCompanyId].savingsGoals;
+      loans = companyData[currentCompanyId].loans;
+      creditCards = companyData[currentCompanyId].creditCards;
+      balances = companyData[currentCompanyId].balances;
+      customCategories = companyData[currentCompanyId].customCategories;
+    }
+
+    function saveAllData() {
+      if (currentCompanyId && companyData[currentCompanyId]) {
+        companyData[currentCompanyId].transactions = transactions;
+        companyData[currentCompanyId].uploadedInvoices = uploadedInvoices;
+        companyData[currentCompanyId].createdInvoices = createdInvoices;
+        companyData[currentCompanyId].events = events;
+        companyData[currentCompanyId].budgets = budgets;
+        companyData[currentCompanyId].savingsGoals = savingsGoals;
+        companyData[currentCompanyId].loans = loans;
+        companyData[currentCompanyId].creditCards = creditCards;
+        companyData[currentCompanyId].balances = balances;
+        companyData[currentCompanyId].customCategories = customCategories;
+      }
+      localStorage.setItem('fm_users', JSON.stringify(users));
+      localStorage.setItem('fm_companies', JSON.stringify(companies));
+      localStorage.setItem('fm_companyMembers', JSON.stringify(companyMembers));
+      localStorage.setItem('fm_companyData', JSON.stringify(companyData));
+      if (currentUser) localStorage.setItem('fm_currentUser', JSON.stringify(currentUser));
+      else localStorage.removeItem('fm_currentUser');
+      if (currentCompanyId) localStorage.setItem('fm_currentCompanyId', currentCompanyId);
+    }
+
+    function showToast(msg, type='info') {
+      let container = document.getElementById('toastContainer');
+      if (!container) {
+        container = document.createElement('div');
+        container.className = 'toast-container';
+        container.id = 'toastContainer';
+        document.body.appendChild(container);
+      }
+      const toast = document.createElement('div');
+      toast.className = `toast toast--${type}`;
+      toast.innerHTML = `<div>${msg}</div>`;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+    function formatCurrency(amount) { return '$' + amount.toFixed(2); }
+    function formatDate(dateStr) { return new Date(dateStr).toLocaleDateString('es-ES'); }
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+      });
+    }
+    function getUniqueCategories() { return [...new Set([...customCategories.income, ...customCategories.expense])]; }
+    function getNetWorth() { return balances.cash + balances.bank + balances.savings + balances.investments; }
+
+    function exportToCSV(data, filename) {
+      if (!data || data.length === 0) { showToast('No hay datos para exportar', 'warning'); return; }
+      const headers = Object.keys(data[0]).join(',');
+      const rows = data.map(row => Object.values(row).map(value => `"${value}"`).join(','));
+      const csv = [headers, ...rows].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.href = url;
+      link.setAttribute('download', filename);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+    function backupData() {
+      const allData = { users, companies, companyMembers, companyData, currentUser, currentCompanyId };
+      const json = JSON.stringify(allData, null, 2);
+      const blob = new Blob([json], { type: 'application/json' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.href = url;
+      link.setAttribute('download', `finmanager_backup_${new Date().toISOString().slice(0,19)}.json`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      showToast('Backup descargado correctamente', 'success');
+    }
+    function restoreBackup(file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const data = JSON.parse(e.target.result);
+          if (data.users) users = data.users;
+          if (data.companies) companies = data.companies;
+          if (data.companyMembers) companyMembers = data.companyMembers;
+          if (data.companyData) companyData = data.companyData;
+          if (data.currentUser) currentUser = data.currentUser;
+          if (data.currentCompanyId) currentCompanyId = data.currentCompanyId;
+          saveAllData();
+          showToast('Backup restaurado correctamente. Recarga la página.', 'success');
+          setTimeout(() => window.location.reload(), 1500);
+        } catch (err) { showToast('Archivo de backup inválido', 'danger'); }
+      };
+      reader.readAsText(file);
+    }
+
+    // ========== AUTENTICACIÓN ==========
+    function renderApp() {
+      if (!currentUser) renderAuthScreen();
+      else renderMainApp();
+    }
+    function renderAuthScreen() {
+      const html = `<div class="auth-container" id="authContainer"><div class="auth-card"><div class="sidebar__logo" style="justify-content:center; margin-bottom:20px;"><div class="sidebar__logo-icon" style="background: linear-gradient(135deg, #0a1a3a, #7b2cbf);">FM</div><div class="sidebar__logo-text">FinManager<span style="font-size:0.8rem;">PRO</span></div></div><div class="auth-tabs" id="authTabs"><div class="auth-tab active" data-tab="login">Iniciar sesión</div><div class="auth-tab" data-tab="register">Registrarse</div></div><div id="authFormContainer"></div></div></div><div id="toastContainer" class="toast-container"></div>`;
+      document.getElementById('appRoot').innerHTML = html;
+      document.querySelectorAll('.auth-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          if (tab.getAttribute('data-tab') === 'login') showLoginForm();
+          else showRegisterForm();
+        });
+      });
+      showLoginForm();
+    }
+    function showLoginForm() {
+      const container = document.getElementById('authFormContainer');
+      container.innerHTML = `<form id="loginForm"><div class="form-group"><label class="form-label">Email o teléfono</label><input type="text" id="loginContact" class="form-control" placeholder="ejemplo@correo.com o +123456789" required></div><div class="form-group"><label class="form-label">Contraseña</label><input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required></div><button type="submit" class="btn btn-primary" style="width:100%; margin-top:8px;">Ingresar</button></form>`;
+      document.getElementById('loginForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const contact = document.getElementById('loginContact').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        const user = users.find(u => (u.email === contact || u.phone === contact) && u.password === password);
+        if (user) {
+          currentUser = { ...user };
+          const member = companyMembers.find(m => m.userId === user.id);
+          if (member) currentCompanyId = member.companyId;
+          else if (companies.length > 0) currentCompanyId = companies[0].id;
+          saveAllData();
+          loadCompanyData();
+          renderApp();
+          showToast(`Bienvenido ${user.name} ${user.lastname || ''}`, 'success');
+        } else showToast('Credenciales incorrectas', 'danger');
+      });
+    }
+    function showRegisterForm() {
+      const container = document.getElementById('authFormContainer');
+      container.innerHTML = `<form id="registerForm"><div class="form-group"><label class="form-label">Nombre</label><input type="text" id="regName" class="form-control" placeholder="Ej: Ana" required></div><div class="form-group"><label class="form-label">Apellidos</label><input type="text" id="regLastname" class="form-control" placeholder="Ej: García López" required></div><div class="form-group"><label class="form-label">Email</label><input type="email" id="regEmail" class="form-control" placeholder="correo@ejemplo.com" required></div><div class="form-group"><label class="form-label">Teléfono</label><input type="tel" id="regPhone" class="form-control" placeholder="+34 123456789" required></div><div class="form-group"><label class="form-label">Contraseña</label><input type="password" id="regPassword" class="form-control" placeholder="••••••••" required></div><div class="form-group"><label class="form-label">Nombre de la empresa (opcional)</label><input type="text" id="companyName" class="form-control" placeholder="Mi Empresa"></div><div class="form-group"><label class="form-label">Tipo de perfil</label><select id="profileType" class="form-control"><option value="individual">Individual</option><option value="business">Empresa</option></select></div><button type="submit" class="btn btn-primary" style="width:100%; margin-top:8px;">Registrarse</button></form>`;
+      document.getElementById('registerForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('regName').value;
+        const lastname = document.getElementById('regLastname').value;
+        const email = document.getElementById('regEmail').value;
+        const phone = document.getElementById('regPhone').value;
+        const password = document.getElementById('regPassword').value;
+        const companyName = document.getElementById('companyName').value.trim() || `${name} - ${document.getElementById('profileType').value === 'business' ? 'Empresa' : 'Personal'}`;
+        const profileType = document.getElementById('profileType').value;
+        if (users.find(u => u.email === email || u.phone === phone)) { showToast('El email o teléfono ya está registrado', 'danger'); return; }
+        const newUser = { id: Date.now().toString(), name, lastname, email, phone, password, avatar: null };
+        users.push(newUser);
+        const newCompany = { id: Date.now().toString(), name: companyName, createdBy: newUser.id, profileType: profileType };
+        companies.push(newCompany);
+        companyMembers.push({ companyId: newCompany.id, userId: newUser.id, role: 'admin' });
+        currentUser = newUser;
+        currentCompanyId = newCompany.id;
+        companyData[currentCompanyId] = {
+          transactions: [
+            { id: '1', date: '2025-03-01', description: 'Nómina', amount: 2450, type: 'income', category: 'Salario', provider: 'Empresa S.A.', budgetTag: '' },
+            { id: '2', date: '2025-02-28', description: 'Supermercado', amount: 185.30, type: 'expense', category: 'Comida', provider: 'Carrefour', budgetTag: 'family' },
+            { id: '3', date: '2025-02-27', description: 'Netflix', amount: 12.99, type: 'expense', category: 'Suscripciones', provider: 'Netflix', budgetTag: 'leisure' },
+            { id: '4', date: '2025-02-25', description: 'Venta freelance', amount: 600, type: 'income', category: 'Freelance', provider: 'Cliente X', budgetTag: '' },
+            { id: '5', date: '2025-02-20', description: 'Gasolina', amount: 45, type: 'expense', category: 'Transporte', provider: 'Repsol', budgetTag: '' }
+          ],
+          uploadedInvoices: [], createdInvoices: [], events: [], budgets: [], savingsGoals: [], loans: [], creditCards: [],
+          balances: { cash: 1250.00, bank: 3500.00, savings: 5200.00, investments: 1500.00 },
+          customCategories: { income: ['Salario','Freelance','Inversiones','Regalos','Facturación'], expense: ['Comida','Transporte','Vivienda','Entretenimiento','Salud','Suscripciones','Compras','Facturación'] },
+          companyProfile: { type: profileType, businessType: '', specialization: '', employees: 0, capital: 0, annualRevenue: 0, legalForm: '', website: '', phone2: '', address: '', modules: [] }
+        };
+        loadCompanyData();
+        saveAllData();
+        renderApp();
+        showToast('Registro exitoso. ¡Bienvenido!', 'success');
+      });
+    }
+
+    // ========== APLICACIÓN PRINCIPAL ==========
+    let currentPage = 'dashboard';
+    let currentTheme = localStorage.getItem('theme') || 'cream';
+    let chart = null;
+    let currentCalendarYear = new Date().getFullYear();
+    let currentCalendarMonth = new Date().getMonth();
+
+    function renderMainApp() {
+      const fullName = currentUser.name + ' ' + (currentUser.lastname || '');
+      const initial = currentUser.name.charAt(0);
+      const avatarUrl = currentUser.avatar || '';
+      const userRole = companyMembers.find(m => m.userId === currentUser.id && m.companyId === currentCompanyId)?.role || 'member';
+      const isAdmin = userRole === 'admin';
+      const companyProfile = companyData[currentCompanyId]?.companyProfile || { type: 'individual' };
+      const isBusiness = companyProfile.type === 'business';
+      const appHtml = `
+        <div class="app-shell">
+          <div class="sidebar" id="sidebar">
+            <div class="sidebar__logo"><div class="sidebar__logo-icon">FM</div><div class="sidebar__logo-text">FinManager<span style="font-size:0.7rem;">PRO</span></div></div>
+            <div style="padding: 0 16px 16px; border-bottom: 1px solid var(--border); margin-bottom: 16px;">
+              <label class="form-label">Empresa</label>
+              <select id="companySelector" class="form-control">${companies.filter(c => companyMembers.some(m => m.userId === currentUser.id && m.companyId === c.id)).map(c => `<option value="${c.id}" ${c.id === currentCompanyId ? 'selected' : ''}>${c.name} (${c.profileType === 'business' ? 'Empresa' : 'Individual'})</option>`).join('')}</select>
+            </div>
+            <nav class="sidebar__nav">
+              <div class="sidebar__section-label">MENÚ</div>
+              <a href="#" class="sidebar__link" data-page="dashboard">📊 Dashboard</a>
+              <a href="#" class="sidebar__link" data-page="transactions">💰 Transacciones</a>
+              <a href="#" class="sidebar__link" data-page="cards">💳 Tarjetas</a>
+              <a href="#" class="sidebar__link" data-page="invoices">📄 Facturas</a>
+              <a href="#" class="sidebar__link" data-page="calendar">📅 Agenda</a>
+              <div class="sidebar__section-label">PLANIFICACIÓN</div>
+              <a href="#" class="sidebar__link" data-page="budget">🎯 Presupuestos</a>
+              <a href="#" class="sidebar__link" data-page="goals">🎯 Metas de ahorro</a>
+              <a href="#" class="sidebar__link" data-page="loans">💰 Préstamos</a>
+              <div class="sidebar__section-label">CONFIGURACIÓN</div>
+              <a href="#" class="sidebar__link" data-page="categories">🏷️ Categorías</a>
+              ${isAdmin ? '<a href="#" class="sidebar__link" data-page="users">👥 Usuarios</a>' : ''}
+              ${isBusiness ? '<a href="#" class="sidebar__link" data-page="businessModules">🏭 Módulos empresa</a>' : ''}
+              <a href="#" class="sidebar__link" data-page="backup">💾 Backup</a>
+              <a href="#" class="sidebar__link" data-page="profile">👤 Perfil</a>
+            </nav>
+            <div class="sidebar__footer"><div class="sidebar__user" id="profileBtn"><div class="sidebar__avatar" id="sidebarAvatar" style="background-image: url('${avatarUrl}'); background-size: cover; background-position: center;">${!avatarUrl ? initial : ''}</div><div class="sidebar__user-info"><div>${fullName}</div><div style="font-size:0.7rem; color:var(--text-muted);">${currentUser.email || currentUser.phone}</div></div></div></div>
+          </div>
+          <div class="topbar"><button class="mobile-menu-toggle" id="mobileMenuToggle">☰</button><h2 class="topbar__title" id="pageTitle">Dashboard</h2><div class="topbar__search"><span class="topbar__search-icon">🔍</span><input type="search" class="topbar__search-input" id="globalSearch" placeholder="Buscar transacción..."></div><div class="topbar__actions"><div class="theme-dropdown"><div class="theme-toggle" id="themeToggle">🎨 Tema</div><div class="theme-menu" id="themeMenu" style="display: none;"><div class="theme-option" data-theme="cream"><div class="theme-color" style="background:#f8fafc;"></div> Crema</div><div class="theme-option" data-theme="dark"><div class="theme-color" style="background:#0f172a;"></div> Oscuro</div><div class="theme-option" data-theme="blue"><div class="theme-color" style="background:#3b82f6;"></div> Azul</div><div class="theme-option" data-theme="cyan"><div class="theme-color" style="background:#06b6d4;"></div> Cian</div><div class="theme-option" data-theme="purple"><div class="theme-color" style="background:#8b5cf6;"></div> Morado</div></div></div><button class="btn btn-primary" id="newTransactionBtn">+ Nueva</button><button class="btn btn-secondary" id="logoutBtn">🚪 Salir</button></div></div>
+          <main class="main-content" id="mainContent"><div id="dynamicView"></div></main>
+        </div>
+        <div id="modalContainer"></div>
+        <div id="toastContainer" class="toast-container"></div>
+      `;
+      document.getElementById('appRoot').innerHTML = appHtml;
+      initTheme();
+      setupNavigation();
+      renderCurrentView();
+      document.getElementById('logoutBtn').addEventListener('click', () => { currentUser = null; saveAllData(); renderApp(); showToast('Sesión cerrada', 'info'); });
+      document.getElementById('profileBtn').addEventListener('click', () => { currentPage = 'profile'; renderCurrentView(); });
+      const companySelector = document.getElementById('companySelector');
+      if (companySelector) {
+        companySelector.addEventListener('change', (e) => {
+          currentCompanyId = e.target.value;
+          loadCompanyData();
+          saveAllData();
+          renderCurrentView();
+        });
+      }
+    }
+
+    // ========== DASHBOARD ==========
+    function getStats() {
+      const totalIncome = transactions.filter(t => t.type === 'income').reduce((s,t)=>s+t.amount,0);
+      const totalExpenses = transactions.filter(t => t.type === 'expense').reduce((s,t)=>s+t.amount,0);
+      const changeIncome = totalIncome ? ((totalIncome - (totalIncome*0.92)) / (totalIncome*0.92) * 100).toFixed(1) : 0;
+      const changeExpenses = totalExpenses ? ((totalExpenses - (totalExpenses*1.05)) / (totalExpenses*1.05) * 100).toFixed(1) : 0;
+      return { totalIncome, totalExpenses, changeIncome, changeExpenses };
+    }
+
+    function renderDashboard() {
+      const stats = getStats();
+      const netWorth = getNetWorth();
+      const recentIncomes = transactions.filter(t => t.type === 'income').sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,5);
+      const recentExpenses = transactions.filter(t => t.type === 'expense').sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,5);
+      const html = `
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-card__header"><span class="stat-card__label">Ingresos</span><span class="stat-card__icon">📈</span></div><div class="stat-card__value">${formatCurrency(stats.totalIncome)}</div><div class="stat-card__change up">▲ +${stats.changeIncome}%</div></div>
+          <div class="stat-card"><div class="stat-card__header"><span class="stat-card__label">Gastos</span><span class="stat-card__icon">📉</span></div><div class="stat-card__value">${formatCurrency(stats.totalExpenses)}</div><div class="stat-card__change down">▼ ${Math.abs(stats.changeExpenses)}%</div></div>
+          <div class="stat-card"><div class="stat-card__header"><span class="stat-card__label">Patrimonio neto</span><span class="stat-card__icon">🏦</span></div><div class="stat-card__value">${formatCurrency(netWorth)}</div></div>
+        </div>
+        <div class="balances-section"><h3>💰 Saldos</h3><div class="balances-grid"><div class="balance-item"><div class="balance-label">Efectivo</div><div class="balance-value"><input type="number" id="cashBalance" step="0.01" value="${balances.cash}"><span>$</span></div></div><div class="balance-item"><div class="balance-label">Banco</div><div class="balance-value"><input type="number" id="bankBalance" step="0.01" value="${balances.bank}"><span>$</span></div></div><div class="balance-item"><div class="balance-label">Ahorros</div><div class="balance-value"><input type="number" id="savingsBalance" step="0.01" value="${balances.savings}"><span>$</span></div></div><div class="balance-item"><div class="balance-label">Inversiones</div><div class="balance-value"><input type="number" id="investmentsBalance" step="0.01" value="${balances.investments}"><span>$</span></div></div></div></div>
+        <div class="lists-container"><div class="list-card"><div class="list-title">📥 Últimos ingresos <button class="btn btn-sm btn-primary" id="addIncomeBtn">+ Agregar</button></div><ul class="transaction-list" id="recentIncomesList">${recentIncomes.map(t => `<li data-id="${t.id}"><div class="transaction-info"><div class="transaction-desc">${escapeHtml(t.description)}</div><div class="transaction-date">${formatDate(t.date)} - ${escapeHtml(t.provider || '')}</div></div><div class="transaction-amount income">${formatCurrency(t.amount)}</div><div class="list-actions"><button class="btn btn-sm btn-secondary editTx" data-id="${t.id}">✏️</button><button class="btn btn-sm btn-danger deleteTx" data-id="${t.id}">🗑️</button></div></li>`).join('')}${recentIncomes.length === 0 ? '<li class="text-muted">No hay ingresos recientes</li>' : ''}</ul></div>
+        <div class="list-card"><div class="list-title">📤 Últimos gastos <button class="btn btn-sm btn-primary" id="addExpenseBtn">+ Agregar</button></div><ul class="transaction-list" id="recentExpensesList">${recentExpenses.map(t => `<li data-id="${t.id}"><div class="transaction-info"><div class="transaction-desc">${escapeHtml(t.description)}</div><div class="transaction-date">${formatDate(t.date)} - ${escapeHtml(t.provider || '')}</div></div><div class="transaction-amount expense">${formatCurrency(t.amount)}</div><div class="list-actions"><button class="btn btn-sm btn-secondary editTx" data-id="${t.id}">✏️</button><button class="btn btn-sm btn-danger deleteTx" data-id="${t.id}">🗑️</button></div></li>`).join('')}${recentExpenses.length === 0 ? '<li class="text-muted">No hay gastos recientes</li>' : ''}</ul></div></div>
+        <div class="filter-panel" id="filterPanelDashboard"><div class="form-group"><label class="form-label">Categoría</label><select id="filterCat" class="form-control"><option value="all">Todas</option>${getUniqueCategories().map(c=>`<option value="${c}">${c}</option>`).join('')}</select></div><div class="form-group"><label class="form-label">Tipo</label><select id="filterType" class="form-control"><option value="all">Todos</option><option value="income">Ingresos</option><option value="expense">Gastos</option></select></div><div class="form-group"><label class="form-label">Desde</label><input type="date" id="dateFrom" class="form-control"></div><div class="form-group"><label class="form-label">Hasta</label><input type="date" id="dateTo" class="form-control"></div><div class="form-group"><button id="clearFilters" class="btn btn-secondary">Limpiar</button></div></div>
+        <div style="margin-bottom:24px;"><canvas id="expenseChart" style="max-height:250px;"></canvas></div>
+        <div class="table-wrapper"><table class="table"><thead><tr><th>Fecha</th><th>Descripción</th><th>Proveedor/Cliente</th><th>Categoría</th><th>Etiqueta</th><th>Monto</th><th>Acciones</th></tr></thead><tbody id="transactionsTbody"></tbody></table></div>
+      `;
+      document.getElementById('dynamicView').innerHTML = html;
+      const updateBalances = () => {
+        balances.cash = parseFloat(document.getElementById('cashBalance').value) || 0;
+        balances.bank = parseFloat(document.getElementById('bankBalance').value) || 0;
+        balances.savings = parseFloat(document.getElementById('savingsBalance').value) || 0;
+        balances.investments = parseFloat(document.getElementById('investmentsBalance').value) || 0;
+        saveAllData();
+        renderDashboard();
+      };
+      document.getElementById('cashBalance')?.addEventListener('change', updateBalances);
+      document.getElementById('bankBalance')?.addEventListener('change', updateBalances);
+      document.getElementById('savingsBalance')?.addEventListener('change', updateBalances);
+      document.getElementById('investmentsBalance')?.addEventListener('change', updateBalances);
+      document.getElementById('addIncomeBtn')?.addEventListener('click', () => openTransactionModal(null, 'income'));
+      document.getElementById('addExpenseBtn')?.addEventListener('click', () => openTransactionModal(null, 'expense'));
+      renderTransactionsTable();
+      renderChart();
+      document.getElementById('filterCat')?.addEventListener('change', () => renderTransactionsTable());
+      document.getElementById('filterType')?.addEventListener('change', () => renderTransactionsTable());
+      document.getElementById('dateFrom')?.addEventListener('change', () => renderTransactionsTable());
+      document.getElementById('dateTo')?.addEventListener('change', () => renderTransactionsTable());
+      document.getElementById('clearFilters')?.addEventListener('click', () => {
+        document.getElementById('filterCat').value = 'all';
+        document.getElementById('filterType').value = 'all';
+        document.getElementById('dateFrom').value = '';
+        document.getElementById('dateTo').value = '';
+        renderTransactionsTable();
+      });
+      document.querySelectorAll('#recentIncomesList .editTx, #recentExpensesList .editTx').forEach(btn => {
+        btn.addEventListener('click', (e) => { const id = btn.getAttribute('data-id'); openTransactionModal(id); });
+      });
+      document.querySelectorAll('#recentIncomesList .deleteTx, #recentExpensesList .deleteTx').forEach(btn => {
+        btn.addEventListener('click', (e) => { const id = btn.getAttribute('data-id'); if (confirm('¿Eliminar?')) { transactions = transactions.filter(t => t.id !== id); saveAllData(); renderCurrentView(); showToast('Eliminada', 'danger'); } });
+      });
+    }
+
+    function renderTransactionsTable() {
+      let filtered = [...transactions];
+      const cat = document.getElementById('filterCat')?.value;
+      const type = document.getElementById('filterType')?.value;
+      const from = document.getElementById('dateFrom')?.value;
+      const to = document.getElementById('dateTo')?.value;
+      if (cat && cat !== 'all') filtered = filtered.filter(t => t.category === cat);
+      if (type && type !== 'all') filtered = filtered.filter(t => t.type === type);
+      if (from) filtered = filtered.filter(t => t.date >= from);
+      if (to) filtered = filtered.filter(t => t.date <= to);
+      const tbody = document.getElementById('transactionsTbody');
+      if (!tbody) return;
+      if (filtered.length === 0) { tbody.innerHTML = '<tr><td colspan="7">No hay transacciones'; return; }
+      tbody.innerHTML = filtered.map(t => {
+        let tagName = '';
+        if (t.budgetTag) tagName = t.budgetTag;
+        return `<tr data-id="${t.id}"><td>${formatDate(t.date)}</td><td>${escapeHtml(t.description)}</td><td>${escapeHtml(t.provider || '-')}</td><td>${escapeHtml(t.category)}</td><td>${escapeHtml(tagName || '-')}</td><td class="${t.type === 'income' ? 'text-success' : 'text-danger'}">${formatCurrency(t.amount)}</td>
+        <td><button class="btn btn-sm btn-secondary editTx" data-id="${t.id}">✏️</button> <button class="btn btn-sm btn-danger deleteTx" data-id="${t.id}">🗑️</button></td>
+        </tr>`;
+      }).join('');
+      document.querySelectorAll('.editTx').forEach(btn => btn.addEventListener('click', (e) => { const id = btn.getAttribute('data-id'); openTransactionModal(id); }));
+      document.querySelectorAll('.deleteTx').forEach(btn => btn.addEventListener('click', (e) => { const id = btn.getAttribute('data-id'); if (confirm('¿Eliminar?')) { transactions = transactions.filter(t => t.id !== id); saveAllData(); renderCurrentView(); showToast('Eliminada', 'danger'); } }));
+    }
+
+    function renderChart() {
+      const canvas = document.getElementById('expenseChart');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (chart) chart.destroy();
+      const expensesByCat = {};
+      transactions.filter(t => t.type === 'expense').forEach(t => { expensesByCat[t.category] = (expensesByCat[t.category] || 0) + t.amount; });
+      const labels = Object.keys(expensesByCat);
+      const data = Object.values(expensesByCat);
+      if (labels.length === 0) { chart = new Chart(ctx, { type: 'doughnut', data: { labels: ['Sin datos'], datasets: [{ data: [1], backgroundColor: ['#ccc'] }] } }); return; }
+      chart = new Chart(ctx, { type: 'doughnut', data: { labels, datasets: [{ data, backgroundColor: ['#3b82f6','#10b981','#ef4444','#f59e0b','#8b5cf6','#06b6d4'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom' } } } });
+    }
+
+    function openTransactionModal(editId = null, presetType = null) {
+      const tx = editId ? transactions.find(t => t.id === editId) : null;
+      const customTags = budgets.filter(b => b.type === 'custom' && b.customName).map(b => b.customName);
+      const allTagOptions = [...new Set(['', 'live_alone', 'pets', 'family', 'large_family', 'leisure', 'business', ...customTags])];
+      const datalistOptions = allTagOptions.filter(t => t).map(t => `<option value="${t}">${t}</option>`).join('');
+      const modalHtml = `<div class="modal-backdrop" id="modalBackdrop"><div class="modal"><div class="modal__header"><h3>${tx ? 'Editar' : 'Nueva'} transacción</h3><button class="modal__close" id="closeModalBtn">&times;</button></div><div class="modal__body"><form id="txForm"><div class="form-group"><label class="form-label">Descripción</label><input type="text" id="desc" class="form-control" value="${escapeHtml(tx?.description || '')}" required></div><div class="form-group"><label class="form-label">Proveedor/Cliente</label><input type="text" id="provider" class="form-control" value="${escapeHtml(tx?.provider || '')}"></div><div class="form-group"><label class="form-label">Monto</label><input type="number" step="0.01" id="amount" class="form-control" value="${tx?.amount || ''}" required></div><div class="form-group"><label class="form-label">Fecha</label><input type="date" id="date" class="form-control" value="${tx?.date || ''}" required></div><div class="form-group"><label class="form-label">Tipo</label><select id="type" class="form-control"><option value="income" ${(tx?.type==='income' || presetType==='income') ? 'selected' : ''}>Ingreso</option><option value="expense" ${(tx?.type==='expense' || presetType==='expense') ? 'selected' : ''}>Gasto</option></select></div><div class="form-group"><label class="form-label">Categoría</label><select id="category" class="form-control">${getCategoryOptions(tx?.type || presetType || 'income', tx?.category)}</select></div><div class="form-group"><label class="form-label">Etiqueta de presupuesto</label><input list="budgetTagsDatalist" id="budgetTag" class="form-control" value="${escapeHtml(tx?.budgetTag || '')}" placeholder="Escribe o selecciona una etiqueta"><datalist id="budgetTagsDatalist">${datalistOptions}</datalist></div><div class="modal__footer"><button type="button" class="btn btn-secondary" id="cancelModalBtn">Cancelar</button><button type="submit" class="btn btn-primary">Guardar</button></div></form></div></div></div>`;
+      const container = document.getElementById('modalContainer');
+      container.innerHTML = modalHtml;
+      const close = () => container.innerHTML = '';
+      document.getElementById('closeModalBtn')?.addEventListener('click', close);
+      document.getElementById('cancelModalBtn')?.addEventListener('click', close);
+      document.getElementById('modalBackdrop')?.addEventListener('click', (e) => { if (e.target === document.getElementById('modalBackdrop')) close(); });
+      const typeSelect = document.getElementById('type');
+      const catSelect = document.getElementById('category');
+      typeSelect?.addEventListener('change', () => { catSelect.innerHTML = getCategoryOptions(typeSelect.value); });
+      document.getElementById('txForm')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const newTx = {
+          id: tx ? tx.id : Date.now().toString(),
+          description: document.getElementById('desc').value,
+          provider: document.getElementById('provider').value,
+          amount: parseFloat(document.getElementById('amount').value),
+          date: document.getElementById('date').value,
+          type: document.getElementById('type').value,
+          category: document.getElementById('category').value,
+          budgetTag: document.getElementById('budgetTag').value
+        };
+        if (isNaN(newTx.amount) || newTx.amount <= 0) { showToast('Monto inválido', 'danger'); return; }
+        if (tx) { const idx = transactions.findIndex(t => t.id === tx.id); transactions[idx] = newTx; }
+        else transactions.push(newTx);
+        saveAllData(); close(); renderCurrentView(); showToast(tx ? 'Transacción actualizada' : 'Transacción agregada', 'success');
+      });
+    }
+    function getCategoryOptions(type, selected='') {
+      const cats = type === 'income' ? customCategories.income : customCategories.expense;
+      return cats.map(c => `<option value="${c}" ${selected===c ? 'selected' : ''}>${c}</option>`).join('');
+    }
+
+    // ========== TARJETAS ==========
+    function renderCardsView() {
+      let html = `<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;"><h2>💳 Tarjetas de crédito / Débito</h2><button class="btn btn-primary" id="addCardBtn">+ Nueva tarjeta</button></div><div class="cards-section" id="cardsContainer"></div>`;
+      document.getElementById('dynamicView').innerHTML = html;
+      renderCardsList();
+      document.getElementById('addCardBtn')?.addEventListener('click', () => openCardModal());
+    }
+    function renderCardsList() {
+      const container = document.getElementById('cardsContainer');
+      if (!container) return;
+      if (creditCards.length === 0) { container.innerHTML = `<div class="credit-card">No hay tarjetas registradas.</div>`; return; }
+      container.innerHTML = creditCards.map(card => {
+        const usagePercent = (card.balance / card.limit) * 100;
+        const available = card.limit - card.balance;
+        const dueDate = card.dueDay ? `${card.dueDay} de cada mes` : 'Sin fecha';
+        return `<div class="credit-card" data-id="${card.id}"><div class="credit-card__type">${escapeHtml(card.issuer || 'Tarjeta')}</div><div class="credit-card__number">**** ${card.lastDigits || '0000'}</div><div class="credit-card__balance">${formatCurrency(card.balance)}</div><div>Límite: ${formatCurrency(card.limit)} | Disponible: ${formatCurrency(available)}</div><div>Fecha de corte: ${dueDate} | Interés: ${card.interestRate}%</div><div class="progress-bar"><div class="progress-fill ${usagePercent > 90 ? 'over-budget' : ''}" style="width: ${Math.min(usagePercent, 100)}%;"></div></div><div class="budget-actions"><button class="btn btn-sm btn-secondary payCardBtn" data-id="${card.id}">💰 Pagar</button><button class="btn btn-sm btn-secondary editCardBtn" data-id="${card.id}">✏️ Editar</button><button class="btn btn-sm btn-danger deleteCardBtn" data-id="${card.id}">🗑️ Eliminar</button></div>${card.payments && card.payments.length ? `<details><summary>Historial de pagos (${card.payments.length})</summary><ul>${card.payments.map(p => `<li>${formatDate(p.date)} - ${formatCurrency(p.amount)}</li>`).join('')}</ul></details>` : ''}</div>`;
+      }).join('');
+      document.querySelectorAll('.payCardBtn').forEach(btn => btn.addEventListener('click', (e) => { const id = btn.getAttribute('data-id'); recordCardPayment(id); }));
+      document.querySelectorAll('.editCardBtn').forEach(btn => btn.addEventListener('click', (e) => { const id = btn.getAttribute('data-id'); openCardModal(id); }));
+      document.querySelectorAll('.deleteCardBtn').forEach(btn => btn.addEventListener('click', (e) => { const id = btn.getAttribute('data-id'); deleteCard(id); }));
+    }
+    function openCardModal(cardId = null) {
+      const card = cardId ? creditCards.find(c => c.id === cardId) : null;
+      const modalHtml = `<div class="modal-backdrop" id="modalBackdrop"><div class="modal" style="max-width: 500px;"><div class="modal__header"><h3>${card ? 'Editar tarjeta' : 'Nueva tarjeta'}</h3><button class="modal__close" id="closeModalBtn">&times;</button></div><div class="modal__body"><form id="cardForm"><div class="form-group"><label class="form-label">Nombre / Entidad</label><input type="text" id="cardName" class="form-control" value="${escapeHtml(card?.name || '')}" required></div><div class="form-group"><label class="form-label">Emisor</label><input type="text" id="cardIssuer" class="form-control" value="${escapeHtml(card?.issuer || '')}"></div><div class="form-group"><label class="form-label">Últimos 4 dígitos</label><input type="text" id="cardLastDigits" class="form-control" maxlength="4" value="${card?.lastDigits || ''}"></div><div class="form-group"><label class="form-label">Límite ($)</label><input type="number" step="0.01" id="cardLimit" class="form-control" value="${card?.limit || ''}" required></div><div class="form-group"><label class="form-label">Saldo actual ($)</label><input type="number" step="0.01" id="cardBalance" class="form-control" value="${card?.balance || 0}"></div><div class="form-group"><label class="form-label">Día de corte (1-31)</label><input type="number" id="cardDueDay" class="form-control" min="1" max="31" value="${card?.dueDay || ''}"></div><div class="form-group"><label class="form-label">Interés mensual (%)</label><input type="number" step="0.1" id="cardInterest" class="form-control" value="${card?.interestRate || 0}"></div><div class="modal__footer"><button type="button" class="btn btn-secondary" id="cancelModalBtn">Cancelar</button><button type="submit" class="btn btn-primary">Guardar</button></div></form></div></div></div>`;
+      const container = document.getElementById('modalContainer');
+      container.innerHTML = modalHtml;
+      const close = () => container.innerHTML = '';
+      document.getElementById('closeModalBtn')?.addEventListener('click', close);
+      document.getElementById('cancelModalBtn')?.addEventListener('click', close);
+      document.getElementById('modalBackdrop')?.addEventListener('click', (e) => { if (e.target === document.getElementById('modalBackdrop')) close(); });
+      document.getElementById('cardForm')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('cardName').value.trim();
+        const issuer = document.getElementById('cardIssuer').value.trim();
+        const lastDigits = document.getElementById('cardLastDigits').value.trim();
+        const limit = parseFloat(document.getElementById('cardLimit').value);
+        let balance = parseFloat(document.getElementById('cardBalance').value);
+        const dueDay = parseInt(document.getElementById('cardDueDay').value);
+        const interestRate = parseFloat(document.getElementById('cardInterest').value) || 0;
+        if (!name || isNaN(limit) || limit <= 0) { showToast('Datos inválidos', 'danger'); return; }
+        if (isNaN(balance)) balance = 0;
+        if (balance > limit) balance = limit;
+        const newCard = { id: card ? card.id : Date.now().toString(), name, issuer, lastDigits, limit, balance, dueDay: isNaN(dueDay) ? null : dueDay, interestRate, payments: card?.payments || [] };
+        if (card) { const idx = creditCards.findIndex(c => c.id === card.id); creditCards[idx] = newCard; }
+        else creditCards.push(newCard);
+        saveAllData(); close(); renderCardsView(); showToast(card ? 'Tarjeta actualizada' : 'Tarjeta añadida', 'success');
+      });
+    }
+    function deleteCard(id) {
+      if (confirm('¿Eliminar esta tarjeta?')) { creditCards = creditCards.filter(c => c.id !== id); saveAllData(); renderCardsView(); showToast('Tarjeta eliminada', 'info'); }
+    }
+    function recordCardPayment(id) {
+      const card = creditCards.find(c => c.id === id);
+      if (!card) return;
+      const maxPay = card.balance;
+      if (maxPay <= 0) { showToast('Esta tarjeta no tiene saldo pendiente', 'info'); return; }
+      const amount = parseFloat(prompt(`Saldo actual: ${formatCurrency(card.balance)}\n¿Cuánto deseas pagar?`, maxPay));
+      if (!isNaN(amount) && amount > 0 && amount <= maxPay) {
+        card.balance -= amount;
+        if (!card.payments) card.payments = [];
+        card.payments.push({ date: new Date().toISOString().split('T')[0], amount: amount });
+        saveAllData();
+        renderCardsView();
+        showToast(`Pagado ${formatCurrency(amount)} de la tarjeta ${card.name}`, 'success');
+        transactions.push({ id: Date.now().toString(), date: new Date().toISOString().split('T')[0], description: `Pago tarjeta ${card.name}`, amount: amount, type: 'expense', category: 'Tarjetas', provider: card.issuer || card.name, budgetTag: '' });
+        saveAllData();
+        showToast('Se ha registrado una transacción de gasto', 'info');
+      } else if (amount > maxPay) { showToast('No puedes pagar más que el saldo actual', 'danger'); }
+    }
+
+    // ========== PRESUPUESTOS ==========
+    function renderBudgetView() {
+      let selectedMonth = new Date().getMonth();
+      let selectedYear = new Date().getFullYear();
+      const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+      let years = [];
+      for (let y = selectedYear - 2; y <= selectedYear + 2; y++) years.push(y);
+      let html = `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;"><h2>📊 Presupuestos mensuales</h2><button class="btn btn-primary" id="addBudgetBtn">+ Nuevo presupuesto</button></div>
+        <div style="display: flex; gap: 16px; margin-bottom: 20px;"><div class="form-group"><label>Mes</label><select id="budgetMonthSelect" class="form-control">${monthNames.map((m, idx) => `<option value="${idx}" ${idx === selectedMonth ? 'selected' : ''}>${m}</option>`).join('')}</select></div>
+        <div class="form-group"><label>Año</label><select id="budgetYearSelect" class="form-control">${years.map(y => `<option value="${y}" ${y === selectedYear ? 'selected' : ''}>${y}</option>`).join('')}</select></div>
+        <button class="btn btn-secondary" id="refreshBudgetsBtn">Actualizar</button></div>
+        <div class="budgets-section" id="budgetsContainer"></div>
+      `;
+      document.getElementById('dynamicView').innerHTML = html;
+      function loadBudgets() {
+        const month = parseInt(document.getElementById('budgetMonthSelect').value);
+        const year = parseInt(document.getElementById('budgetYearSelect').value);
+        const currentBudgets = budgets.filter(b => b.month === month && b.year === year);
+        const container = document.getElementById('budgetsContainer');
+        if (!container) return;
+        if (currentBudgets.length === 0) { container.innerHTML = `<div class="credit-card">No hay presupuestos para ${monthNames[month]} de ${year}.</div>`; return; }
+        container.innerHTML = currentBudgets.map(budget => {
+          const spent = getSpentForBudget(budget);
+          let amount = budget.amount;
+          if (budget.type === BUDGET_TYPES.LARGE_FAMILY && budget.familyMultiplier) amount = budget.amount * budget.familyMultiplier;
+          const percentage = (spent / amount) * 100;
+          const overBudget = spent > amount;
+          const title = getBudgetTitle(budget);
+          return `<div class="budget-card"><div class="budget-card-header"><span class="budget-category">${escapeHtml(title)}</span><span class="budget-amount">${formatCurrency(amount)}</span></div><div class="budget-progress"><div class="progress-bar"><div class="progress-fill ${overBudget ? 'over-budget' : ''}" style="width: ${Math.min(percentage, 100)}%;"></div></div><div class="budget-spent">Gastado: ${formatCurrency(spent)} (${percentage.toFixed(1)}%)${overBudget ? `<span class="badge-warning"> ¡Superado por ${formatCurrency(spent - amount)}!</span>` : ''}</div></div><div class="budget-actions"><button class="btn btn-sm btn-secondary editBudgetBtn" data-id="${budget.id}">✏️ Editar</button><button class="btn btn-sm btn-danger deleteBudgetBtn" data-id="${budget.id}">🗑️ Eliminar</button></div></div>`;
+        }).join('');
+        document.querySelectorAll('.editBudgetBtn').forEach(btn => btn.addEventListener('click', (e) => { const id = btn.getAttribute('data-id'); openBudgetModal(id); }));
+        document.querySelectorAll('.deleteBudgetBtn').forEach(btn => btn.addEventListener('click', (e) => { const id = btn.getAttribute('data-id'); deleteBudget(id); }));
+      }
+      document.getElementById('refreshBudgetsBtn')?.addEventListener('click', loadBudgets);
+      document.getElementById('addBudgetBtn')?.addEventListener('click', () => openBudgetModal());
+      loadBudgets();
+    }
+    function getBudgetTitle(budget) {
+      if (budget.type === BUDGET_TYPES.CATEGORY) return `Categoría: ${budget.category}`;
+      if (budget.type === BUDGET_TYPES.CUSTOM) return `📝 ${budget.customName}`;
+      return BUDGET_TYPE_NAMES[budget.type] || budget.type;
+    }
+    function getSpentForBudget(budget) {
+      let spent = 0;
+      const targetMonth = budget.month;
+      const targetYear = budget.year;
+      if (budget.type === BUDGET_TYPES.CATEGORY) {
+        spent = transactions.filter(t => t.type === 'expense' && t.category === budget.category && new Date(t.date).getMonth() === targetMonth && new Date(t.date).getFullYear() === targetYear).reduce((s,t)=>s+t.amount,0);
+      } else if (budget.type === BUDGET_TYPES.CUSTOM) {
+        spent = transactions.filter(t => t.type === 'expense' && t.budgetTag === budget.customName && new Date(t.date).getMonth() === targetMonth && new Date(t.date).getFullYear() === targetYear).reduce((s,t)=>s+t.amount,0);
+      } else {
+        spent = transactions.filter(t => t.type === 'expense' && t.budgetTag === budget.type && new Date(t.date).getMonth() === targetMonth && new Date(t.date).getFullYear() === targetYear).reduce((s,t)=>s+t.amount,0);
+        if (budget.type === BUDGET_TYPES.PETS) {
+          spent += (budget.petFood || 0) + (budget.petCare || 0) + (budget.petInsurance || 0);
+        }
+      }
+      return spent;
+    }
+    function openBudgetModal(budgetId = null) {
+      const budget = budgetId ? budgets.find(b => b.id === budgetId) : null;
+      const modalHtml = `<div class="modal-backdrop" id="modalBackdrop"><div class="modal"><div class="modal__header"><h3>${budget ? 'Editar presupuesto' : 'Nuevo presupuesto'}</h3><button class="modal__close" id="closeModalBtn">&times;</button></div><div class="modal__body"><form id="budgetForm"><div class="form-group"><label class="form-label">Tipo</label><select id="budgetType" class="form-control"><option value="category" ${budget?.type === 'category' ? 'selected' : ''}>Por categoría</option><option value="live_alone" ${budget?.type === 'live_alone' ? 'selected' : ''}>Vivir solo</option><option value="pets" ${budget?.type === 'pets' ? 'selected' : ''}>Mascotas</option><option value="family" ${budget?.type === 'family' ? 'selected' : ''}>Familia</option><option value="large_family" ${budget?.type === 'large_family' ? 'selected' : ''}>Familia numerosa</option><option value="leisure" ${budget?.type === 'leisure' ? 'selected' : ''}>Ocio</option><option value="business" ${budget?.type === 'business' ? 'selected' : ''}>Empresa</option><option value="custom" ${budget?.type === 'custom' ? 'selected' : ''}>Personalizado</option></select></div>
+      <div id="budgetCategoryGroup" style="display:${budget?.type === 'category' ? 'block' : 'none'}"><label class="form-label">Categoría</label><select id="budgetCategory" class="form-control">${customCategories.expense.map(c=>`<option value="${c}" ${budget?.category === c ? 'selected' : ''}>${c}</option>`).join('')}</select></div>
+      <div id="budgetCustomGroup" style="display:${budget?.type === 'custom' ? 'block' : 'none'}"><label class="form-label">Nombre personalizado</label><input type="text" id="budgetCustomName" class="form-control" value="${escapeHtml(budget?.customName || '')}" placeholder="Ej: Vacaciones, Compras..."></div>
+      <div class="form-group"><label class="form-label">Monto límite ($)</label><input type="number" step="0.01" id="budgetAmount" class="form-control" value="${budget?.amount || ''}" required></div>
+      <div class="form-group"><label class="form-label">Mes</label><select id="budgetMonth" class="form-control">${['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'].map((m,idx)=>`<option value="${idx}" ${budget?.month === idx ? 'selected' : ''}>${m}</option>`).join('')}</select></div>
+      <div class="form-group"><label class="form-label">Año</label><input type="number" id="budgetYear" class="form-control" value="${budget?.year || new Date().getFullYear()}" required></div>
+      <div class="modal__footer"><button type="button" class="btn btn-secondary" id="cancelModalBtn">Cancelar</button><button type="submit" class="btn btn-primary">Guardar</button></div></form></div></div></div>`;
+      const container = document.getElementById('modalContainer');
+      container.innerHTML = modalHtml;
+      const close = () => container.innerHTML = '';
+      document.getElementById('closeModalBtn')?.addEventListener('click', close);
+      document.getElementById('cancelModalBtn')?.addEventListener('click', close);
+      document.getElementById('modalBackdrop')?.addEventListener('click', (e) => { if (e.target === document.getElementById('modalBackdrop')) close(); });
+      const typeSelect = document.getElementById('budgetType');
+      const catGroup = document.getElementById('budgetCategoryGroup');
+      const customGroup = document.getElementById('budgetCustomGroup');
+      typeSelect.addEventListener('change', () => {
+        catGroup.style.display = typeSelect.value === 'category' ? 'block' : 'none';
+        customGroup.style.display = typeSelect.value === 'custom' ? 'block' : 'none';
+      });
+      document.getElementById('budgetForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const type = typeSelect.value;
+        const amount = parseFloat(document.getElementById('budgetAmount').value);
+        const month = parseInt(document.getElementById('budgetMonth').value);
+        const year = parseInt(document.getElementById('budgetYear').value);
+        if (isNaN(amount) || amount <= 0) { showToast('Monto inválido', 'danger'); return; }
+        const newBudget = { id: budget ? budget.id : Date.now().toString(), type, amount, month, year };
+        if (type === 'category') newBudget.category = document.getElementById('budgetCategory').value;
+        if (type === 'custom') newBudget.customName = document.getElementById('budgetCustomName').value;
+        if (budget) { const idx = budgets.findIndex(b => b.id === budget.id); budgets[idx] = newBudget; }
+        else budgets.push(newBudget);
+        saveAllData(); close(); renderBudgetView(); showToast(budget ? 'Presupuesto actualizado' : 'Presupuesto agregado', 'success');
+      });
+    }
+    function deleteBudget(id) {
+      if (confirm('¿Eliminar este presupuesto?')) { budgets = budgets.filter(b => b.id !== id); saveAllData(); renderBudgetView(); showToast('Presupuesto eliminado', 'info'); }
+    }
+
+    // ========== METAS DE AHORRO ==========
+    function renderGoalsView() {
+      let html = `<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;"><h2>🎯 Metas de ahorro</h2><button class="btn btn-primary" id="addGoalBtn">+ Nueva meta</button></div><div id="goalsContainer" class="goals-grid"></div>`;
+      document.getElementById('dynamicView').innerHTML = html;
+      document.getElementById('addGoalBtn').addEventListener('click', () => openGoalModal());
+      renderGoalsList();
+    }
+    function renderGoalsList() {
+      const container = document.getElementById('goalsContainer');
+      if (!container) return;
+      if (savingsGoals.length === 0) { container.innerHTML = '<div class="goal-card">No hay metas de ahorro. Crea una nueva.</div>'; return; }
+      container.innerHTML = savingsGoals.map(goal => {
+        const percentage = (goal.currentAmount / goal.targetAmount) * 100;
+        const remaining = goal.targetAmount - goal.currentAmount;
+        return `<div class="goal-card"><h3>${escapeHtml(goal.name)}</h3><div><strong>Objetivo:</strong> ${formatCurrency(goal.targetAmount)}</div><div><strong>Progreso:</strong> ${formatCurrency(goal.currentAmount)} (${percentage.toFixed(1)}%)</div><div class="progress-bar"><div class="progress-fill" style="width: ${Math.min(percentage,100)}%"></div></div><div><strong>Restante:</strong> ${formatCurrency(remaining)}</div><div class="budget-actions"><button class="btn btn-sm btn-secondary addToGoalBtn" data-id="${goal.id}">💰 Añadir</button><button class="btn btn-sm btn-secondary editGoalBtn" data-id="${goal.id}">✏️ Editar</button><button class="btn btn-sm btn-danger deleteGoalBtn" data-id="${goal.id}">🗑️ Eliminar</button></div></div>`;
+      }).join('');
+      document.querySelectorAll('.addToGoalBtn').forEach(btn => btn.addEventListener('click', (e) => { const id = btn.getAttribute('data-id'); addToGoal(id); }));
+      document.querySelectorAll('.editGoalBtn').forEach(btn => btn.addEventListener('click', (e) => { const id = btn.getAttribute('data-id'); openGoalModal(id); }));
+      document.querySelectorAll('.deleteGoalBtn').forEach(btn => btn.addEventListener('click', (e) => { const id = btn.getAttribute('data-id'); deleteGoal(id); }));
+    }
+    function openGoalModal(goalId = null) {
+      const goal = goalId ? savingsGoals.find(g => g.id === goalId) : null;
+      const modalHtml = `<div class="modal-backdrop" id="modalBackdrop"><div class="modal"><div class="modal__header"><h3>${goal ? 'Editar meta' : 'Nueva meta'}</h3><button class="modal__close" id="closeModalBtn">&times;</button></div><div class="modal__body"><form id="goalForm"><div class="form-group"><label class="form-label">Nombre</label><input type="text" id="goalName" class="form-control" value="${escapeHtml(goal?.name || '')}" required></div><div class="form-group"><label class="form-label">Monto objetivo ($)</label><input type="number" step="0.01" id="goalTarget" class="form-control" value="${goal?.targetAmount || ''}" required></div><div class="form-group"><label class="form-label">Monto actual ($)</label><input type="number" step="0.01" id="goalCurrent" class="form-control" value="${goal?.currentAmount || 0}"></div><div class="modal__footer"><button type="button" class="btn btn-secondary" id="cancelModalBtn">Cancelar</button><button type="submit" class="btn btn-primary">Guardar</button></div></form></div></div></div>`;
+      const container = document.getElementById('modalContainer');
+      container.innerHTML = modalHtml;
+      const close = () => container.innerHTML = '';
+      document.getElementById('closeModalBtn')?.addEventListener('click', close);
+      document.getElementById('cancelModalBtn')?.addEventListener('click', close);
+      document.getElementById('modalBackdrop')?.addEventListener('click', (e) => { if (e.target === document.getElementById('modalBackdrop')) close(); });
+      document.getElementById('goalForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('goalName').value.trim();
+        const targetAmount = parseFloat(document.getElementById('goalTarget').value);
+        let currentAmount = parseFloat(document.getElementById('goalCurrent').value);
+        if (!name || isNaN(targetAmount) || targetAmount <= 0) { showToast('Datos inválidos', 'danger'); return; }
+        if (isNaN(currentAmount)) currentAmount = 0;
+        if (currentAmount > targetAmount) currentAmount = targetAmount;
+        if (goal) {
+          goal.name = name; goal.targetAmount = targetAmount; goal.currentAmount = currentAmount;
+          const idx = savingsGoals.findIndex(g => g.id === goal.id); savingsGoals[idx] = goal;
+        } else {
+          savingsGoals.push({ id: Date.now().toString(), name, targetAmount, currentAmount });
+        }
+        saveAllData(); close(); renderGoalsView(); showToast(goal ? 'Meta actualizada' : 'Meta creada', 'success');
+      });
+    }
+    function deleteGoal(id) {
+      if (confirm('¿Eliminar esta meta?')) { savingsGoals = savingsGoals.filter(g => g.id !== id); saveAllData(); renderGoalsView(); showToast('Meta eliminada', 'info'); }
+    }
+    function addToGoal(id) {
+      const goal = savingsGoals.find(g => g.id === id);
+      if (!goal) return;
+      const remaining = goal.targetAmount - goal.currentAmount;
+      if (remaining <= 0) { showToast('¡Ya alcanzaste tu meta!', 'success'); return; }
+      const amount = parseFloat(prompt(`Meta: ${goal.name}\nRestante: ${formatCurrency(remaining)}\n¿Cuánto quieres añadir?`, remaining));
+      if (!isNaN(amount) && amount > 0 && amount <= remaining) {
+        goal.currentAmount += amount;
+        saveAllData();
+        renderGoalsView();
+        showToast(`Añadido ${formatCurrency(amount)} a la meta "${goal.name}"`, 'success');
+        transactions.push({ id: Date.now().toString(), date: new Date().toISOString().split('T')[0], description: `Ahorro para meta: ${goal.name}`, amount: amount, type: 'expense', category: 'Ahorro', provider: '', budgetTag: '' });
+        saveAllData();
+      } else if (amount > remaining) showToast('No puedes añadir más que el restante', 'danger');
+    }
+
+    // ========== PRÉSTAMOS ==========
+    function renderLoansView() {
+      let html = `<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;"><h2>💰 Préstamos</h2><button class="btn btn-primary" id="addLoanBtn">+ Nuevo préstamo</button></div><div id="loansContainer" class="loans-grid"></div>`;
+      document.getElementById('dynamicView').innerHTML = html;
+      document.getElementById('addLoanBtn').addEventListener('click', () => openLoanModal());
+      renderLoansList();
+    }
+    function renderLoansList() {
+      const container = document.getElementById('loansContainer');
+      if (!container) return;
+      if (loans.length === 0) { container.innerHTML = '<div class="loan-card">No hay préstamos registrados.</div>'; return; }
+      container.innerHTML = loans.map(loan => {
+        const paidTotal = loan.payments ? loan.payments.reduce((s,p)=>s+p.amount,0) : 0;
+        const remaining = loan.principal - paidTotal;
+        const percentPaid = (paidTotal / loan.principal) * 100;
+        return `<div class="loan-card"><h3>${escapeHtml(loan.name)}</h3><div><strong>Prestamista:</strong> ${escapeHtml(loan.lender)}</div><div><strong>Principal:</strong> ${formatCurrency(loan.principal)}</div><div><strong>Interés anual:</strong> ${loan.interestRate}%</div><div><strong>Plazo:</strong> ${loan.termMonths} meses</div><div><strong>Inicio:</strong> ${formatDate(loan.startDate)}</div><div><strong>Pagado:</strong> ${formatCurrency(paidTotal)} | <strong>Restante:</strong> ${formatCurrency(remaining)}</div><div class="progress-bar"><div class="progress-fill" style="width: ${Math.min(percentPaid,100)}%"></div></div><div class="budget-actions"><button class="btn btn-sm btn-secondary payLoanBtn" data-id="${loan.id}">💰 Abonar</button><button class="btn btn-sm btn-secondary editLoanBtn" data-id="${loan.id}">✏️ Editar</button><button class="btn btn-sm btn-danger deleteLoanBtn" data-id="${loan.id}">🗑️ Eliminar</button></div>${loan.payments && loan.payments.length ? `<details><summary>Historial de pagos (${loan.payments.length})</summary><ul>${loan.payments.map(p => `<li>${formatDate(p.date)} - ${formatCurrency(p.amount)}</li>`).join('')}</ul></details>` : ''}</div>`;
+      }).join('');
+      document.querySelectorAll('.payLoanBtn').forEach(btn => btn.addEventListener('click', (e) => { const id = btn.getAttribute('data-id'); recordLoanPayment(id); }));
+      document.querySelectorAll('.editLoanBtn').forEach(btn => btn.addEventListener('click', (e) => { const id = btn.getAttribute('data-id'); openLoanModal(id); }));
+      document.querySelectorAll('.deleteLoanBtn').forEach(btn => btn.addEventListener('click', (e) => { const id = btn.getAttribute('data-id'); deleteLoan(id); }));
+    }
+    function openLoanModal(loanId = null) {
+      const loan = loanId ? loans.find(l => l.id === loanId) : null;
+      const modalHtml = `<div class="modal-backdrop" id="modalBackdrop"><div class="modal"><div class="modal__header"><h3>${loan ? 'Editar préstamo' : 'Nuevo préstamo'}</h3><button class="modal__close" id="closeModalBtn">&times;</button></div><div class="modal__body"><form id="loanForm"><div class="form-group"><label class="form-label">Nombre / Propósito</label><input type="text" id="loanName" class="form-control" value="${escapeHtml(loan?.name || '')}" required></div><div class="form-group"><label class="form-label">Prestamista</label><input type="text" id="loanLender" class="form-control" value="${escapeHtml(loan?.lender || '')}" required></div><div class="form-group"><label class="form-label">Monto principal ($)</label><input type="number" step="0.01" id="loanPrincipal" class="form-control" value="${loan?.principal || ''}" required></div><div class="form-group"><label class="form-label">Interés anual (%)</label><input type="number" step="0.1" id="loanInterest" class="form-control" value="${loan?.interestRate || 0}" required></div><div class="form-group"><label class="form-label">Plazo (meses)</label><input type="number" id="loanTerm" class="form-control" value="${loan?.termMonths || ''}" required></div><div class="form-group"><label class="form-label">Fecha inicio</label><input type="date" id="loanStartDate" class="form-control" value="${loan?.startDate || ''}" required></div><div class="modal__footer"><button type="button" class="btn btn-secondary" id="cancelModalBtn">Cancelar</button><button type="submit" class="btn btn-primary">Guardar</button></div></form></div></div></div>`;
+      const container = document.getElementById('modalContainer');
+      container.innerHTML = modalHtml;
+      const close = () => container.innerHTML = '';
+      document.getElementById('closeModalBtn')?.addEventListener('click', close);
+      document.getElementById('cancelModalBtn')?.addEventListener('click', close);
+      document.getElementById('modalBackdrop')?.addEventListener('click', (e) => { if (e.target === document.getElementById('modalBackdrop')) close(); });
+      document.getElementById('loanForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('loanName').value.trim();
+        const lender = document.getElementById('loanLender').value.trim();
+        const principal = parseFloat(document.getElementById('loanPrincipal').value);
+        const interestRate = parseFloat(document.getElementById('loanInterest').value);
+        const termMonths = parseInt(document.getElementById('loanTerm').value);
+        const startDate = document.getElementById('loanStartDate').value;
+        if (!name || !lender || isNaN(principal) || principal <= 0 || isNaN(interestRate) || isNaN(termMonths) || termMonths <= 0 || !startDate) { showToast('Complete todos los campos', 'danger'); return; }
+        if (loan) {
+          loan.name = name; loan.lender = lender; loan.principal = principal; loan.interestRate = interestRate; loan.termMonths = termMonths; loan.startDate = startDate;
+          const idx = loans.findIndex(l => l.id === loan.id); loans[idx] = loan;
+        } else {
+          loans.push({ id: Date.now().toString(), name, lender, principal, interestRate, termMonths, startDate, payments: [] });
+        }
+        saveAllData(); close(); renderLoansView(); showToast(loan ? 'Préstamo actualizado' : 'Préstamo agregado', 'success');
+      });
+    }
+    function deleteLoan(id) {
+      if (confirm('¿Eliminar este préstamo?')) { loans = loans.filter(l => l.id !== id); saveAllData(); renderLoansView(); showToast('Préstamo eliminado', 'info'); }
+    }
+    function recordLoanPayment(loanId) {
+      const loan = loans.find(l => l.id === loanId);
+      if (!loan) return;
+      const paidTotal = loan.payments ? loan.payments.reduce((s,p)=>s+p.amount,0) : 0;
+      const remaining = loan.principal - paidTotal;
+      if (remaining <= 0) { showToast('Préstamo totalmente pagado', 'info'); return; }
+      const amount = parseFloat(prompt(`Saldo restante: ${formatCurrency(remaining)}\n¿Cuánto deseas abonar?`, remaining));
+      if (!isNaN(amount) && amount > 0 && amount <= remaining) {
+        if (!loan.payments) loan.payments = [];
+        loan.payments.push({ date: new Date().toISOString().split('T')[0], amount });
+        transactions.push({ id: Date.now().toString(), date: new Date().toISOString().split('T')[0], description: `Pago préstamo: ${loan.name}`, amount, type: 'expense', category: 'Préstamos', provider: loan.lender, budgetTag: '' });
+        saveAllData(); renderLoansView(); showToast(`Abono de ${formatCurrency(amount)} registrado`, 'success');
+      } else if (amount > remaining) showToast('No puedes abonar más que el saldo restante', 'danger');
+    }
+
+    // ========== FACTURAS ==========
+    function renderInvoicesView() {
+      let html = `<div style="display: flex; justify-content: space-between; margin-bottom: 24px;"><h2>📄 Facturas</h2><button class="btn btn-primary" id="uploadInvoiceBtn">📂 Subir factura</button><button class="btn btn-secondary" id="createInvoiceBtn">✏️ Crear factura</button></div><div class="lists-container"><div class="list-card"><div class="list-title">📎 Facturas subidas</div><div id="uploadedInvoicesList"></div></div><div class="list-card"><div class="list-title">📝 Facturas creadas</div><div id="createdInvoicesList"></div></div></div>`;
+      document.getElementById('dynamicView').innerHTML = html;
+      document.getElementById('uploadInvoiceBtn').addEventListener('click', () => openUploadInvoiceModal());
+      document.getElementById('createInvoiceBtn').addEventListener('click', () => openCreateInvoiceModal());
+      renderUploadedInvoices();
+      renderCreatedInvoices();
+    }
+    function renderUploadedInvoices() {
+      const container = document.getElementById('uploadedInvoicesList');
+      if (!container) return;
+      if (uploadedInvoices.length === 0) { container.innerHTML = '<div class="text-muted">No hay facturas subidas.</div>'; return; }
+      container.innerHTML = uploadedInvoices.map(inv => `<div class="transaction-list"><li><div><strong>${escapeHtml(inv.name)}</strong><br><small>${formatDate(inv.date)}</small></div><div><button class="btn btn-sm btn-secondary viewInvoiceBtn" data-id="${inv.id}">👁️ Ver</button><button class="btn btn-sm btn-danger deleteInvoiceBtn" data-id="${inv.id}">🗑️</button></div></li></div>`).join('');
+      document.querySelectorAll('.viewInvoiceBtn').forEach(btn => btn.addEventListener('click', (e) => { const id = btn.getAttribute('data-id'); viewUploadedInvoice(id); }));
+      document.querySelectorAll('.deleteInvoiceBtn').forEach(btn => btn.addEventListener('click', (e) => { const id = btn.getAttribute('data-id'); deleteUploadedInvoice(id); }));
+    }
+    function renderCreatedInvoices() {
+      const container = document.getElementById('createdInvoicesList');
+      if (!container) return;
+      if (createdInvoices.length === 0) { container.innerHTML = '<div class="text-muted">No hay facturas creadas.</div>'; return; }
+      container.innerHTML = createdInvoices.map(inv => `<div class="transaction-list"><li><div><strong>${escapeHtml(inv.number)} - ${escapeHtml(inv.clientName)}</strong><br><small>${formatDate(inv.date)} - Total: ${formatCurrency(inv.total)}</small></div><div><button class="btn btn-sm btn-secondary viewCreatedInvoiceBtn" data-id="${inv.id}">👁️ Ver</button><button class="btn btn-sm btn-danger deleteCreatedInvoiceBtn" data-id="${inv.id}">🗑️</button></div></li></div>`).join('');
+      document.querySelectorAll('.viewCreatedInvoiceBtn').forEach(btn => btn.addEventListener('click', (e) => { const id = btn.getAttribute('data-id'); viewCreatedInvoice(id); }));
+      document.querySelectorAll('.deleteCreatedInvoiceBtn').forEach(btn => btn.addEventListener('click', (e) => { const id = btn.getAttribute('data-id'); deleteCreatedInvoice(id); }));
+    }
+    function openUploadInvoiceModal() {
+      const modalHtml = `<div class="modal-backdrop" id="modalBackdrop"><div class="modal"><div class="modal__header"><h3>Subir factura</h3><button class="modal__close" id="closeModalBtn">&times;</button></div><div class="modal__body"><form id="uploadInvoiceForm"><div class="form-group"><label class="form-label">Nombre del archivo</label><input type="text" id="invoiceName" class="form-control" required></div><div class="form-group"><label class="form-label">Archivo PDF/Imagen</label><input type="file" id="invoiceFile" accept=".pdf,.jpg,.png" required></div><div class="modal__footer"><button type="button" class="btn btn-secondary" id="cancelModalBtn">Cancelar</button><button type="submit" class="btn btn-primary">Subir</button></div></form></div></div></div>`;
+      const container = document.getElementById('modalContainer');
+      container.innerHTML = modalHtml;
+      const close = () => container.innerHTML = '';
+      document.getElementById('closeModalBtn')?.addEventListener('click', close);
+      document.getElementById('cancelModalBtn')?.addEventListener('click', close);
+      document.getElementById('modalBackdrop')?.addEventListener('click', (e) => { if (e.target === document.getElementById('modalBackdrop')) close(); });
+      document.getElementById('uploadInvoiceForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('invoiceName').value.trim();
+        const file = document.getElementById('invoiceFile').files[0];
+        if (!name || !file) { showToast('Complete todos los campos', 'danger'); return; }
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          uploadedInvoices.push({ id: Date.now().toString(), name, date: new Date().toISOString().split('T')[0], data: ev.target.result });
+          saveAllData(); close(); renderInvoicesView(); showToast('Factura subida', 'success');
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+    function viewUploadedInvoice(id) {
+      const inv = uploadedInvoices.find(i => i.id === id);
+      if (inv && inv.data) {
+        const win = window.open();
+        win.document.write(`<iframe src="${inv.data}" width="100%" height="100%"></iframe>`);
+      } else showToast('No se puede visualizar', 'danger');
+    }
+    function deleteUploadedInvoice(id) {
+      if (confirm('¿Eliminar esta factura subida?')) { uploadedInvoices = uploadedInvoices.filter(i => i.id !== id); saveAllData(); renderInvoicesView(); showToast('Factura eliminada', 'info'); }
+    }
+    function openCreateInvoiceModal(editId = null) {
+      const inv = editId ? createdInvoices.find(i => i.id === editId) : null;
+      const modalHtml = `<div class="modal-backdrop" id="modalBackdrop"><div class="modal" style="max-width: 600px;"><div class="modal__header"><h3>${inv ? 'Editar factura' : 'Crear factura'}</h3><button class="modal__close" id="closeModalBtn">&times;</button></div><div class="modal__body"><form id="createInvoiceForm"><div class="form-group"><label class="form-label">Número de factura</label><input type="text" id="invNumber" class="form-control" value="${escapeHtml(inv?.number || '')}" required></div><div class="form-group"><label class="form-label">Cliente</label><input type="text" id="invClient" class="form-control" value="${escapeHtml(inv?.clientName || '')}" required></div><div class="form-group"><label class="form-label">Fecha</label><input type="date" id="invDate" class="form-control" value="${inv?.date || new Date().toISOString().split('T')[0]}" required></div><div class="form-group"><label class="form-label">Total ($)</label><input type="number" step="0.01" id="invTotal" class="form-control" value="${inv?.total || ''}" required></div><div class="form-group"><label class="form-label">Concepto</label><textarea id="invConcept" class="form-control" rows="3">${escapeHtml(inv?.concept || '')}</textarea></div><div class="modal__footer"><button type="button" class="btn btn-secondary" id="cancelModalBtn">Cancelar</button><button type="submit" class="btn btn-primary">Guardar factura</button></div></form></div></div></div>`;
+      const container = document.getElementById('modalContainer');
+      container.innerHTML = modalHtml;
+      const close = () => container.innerHTML = '';
+      document.getElementById('closeModalBtn')?.addEventListener('click', close);
+      document.getElementById('cancelModalBtn')?.addEventListener('click', close);
+      document.getElementById('modalBackdrop')?.addEventListener('click', (e) => { if (e.target === document.getElementById('modalBackdrop')) close(); });
+      document.getElementById('createInvoiceForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const number = document.getElementById('invNumber').value.trim();
+        const clientName = document.getElementById('invClient').value.trim();
+        const date = document.getElementById('invDate').value;
+        const total = parseFloat(document.getElementById('invTotal').value);
+        const concept = document.getElementById('invConcept').value;
+        if (!number || !clientName || !date || isNaN(total) || total <= 0) { showToast('Complete los campos obligatorios', 'danger'); return; }
+        if (inv) {
+          inv.number = number; inv.clientName = clientName; inv.date = date; inv.total = total; inv.concept = concept;
+          const idx = createdInvoices.findIndex(i => i.id === inv.id); createdInvoices[idx] = inv;
+        } else {
+          createdInvoices.push({ id: Date.now().toString(), number, clientName, date, total, concept });
+        }
+        saveAllData(); close(); renderInvoicesView(); showToast(inv ? 'Factura actualizada' : 'Factura creada', 'success');
+      });
+    }
+    function viewCreatedInvoice(id) {
+      const inv = createdInvoices.find(i => i.id === id);
+      if (!inv) return;
+      const win = window.open();
+      win.document.write(`
+        <html><head><title>Factura ${inv.number}</title><style>body{font-family:sans-serif;padding:2rem}</style></head>
+        <body><h1>FACTURA ${inv.number}</h1><p><strong>Cliente:</strong> ${inv.clientName}</p><p><strong>Fecha:</strong> ${formatDate(inv.date)}</p><p><strong>Total:</strong> ${formatCurrency(inv.total)}</p><p><strong>Concepto:</strong> ${inv.concept}</p></body></html>
+      `);
+    }
+    function deleteCreatedInvoice(id) {
+      if (confirm('¿Eliminar esta factura?')) { createdInvoices = createdInvoices.filter(i => i.id !== id); saveAllData(); renderInvoicesView(); showToast('Factura eliminada', 'info'); }
+    }
+
+    // ========== AGENDA ==========
+    function renderCalendarView() {
+      const year = currentCalendarYear;
+      const month = currentCalendarMonth;
+      const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month+1, 0).getDate();
+      let calendarHtml = `<div class="calendar-container"><div style="display: flex; justify-content: space-between; margin-bottom: 16px;"><button class="btn btn-secondary" id="prevMonthBtn">◀</button><h3>${monthNames[month]} ${year}</h3><button class="btn btn-secondary" id="nextMonthBtn">▶</button></div><div class="calendar-grid">${['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'].map(d => `<div class="calendar-day-header"><strong>${d}</strong></div>`).join('')}`;
+      for (let i = 0; i < firstDay; i++) calendarHtml += '<div></div>';
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        const hasEvent = events.some(e => e.date === dateStr);
+        const isToday = new Date().toISOString().split('T')[0] === dateStr;
+        calendarHtml += `<div class="calendar-day ${hasEvent ? 'has-event' : ''} ${isToday ? 'today' : ''}" data-date="${dateStr}">${d}</div>`;
+      }
+      calendarHtml += `</div><div style="margin-top: 20px;"><h4>Eventos del día</h4><div id="dayEvents"></div></div><button class="btn btn-primary" id="addEventBtn" style="margin-top: 12px;">+ Añadir evento</button></div>`;
+      document.getElementById('dynamicView').innerHTML = calendarHtml;
+      document.querySelectorAll('.calendar-day').forEach(day => {
+        day.addEventListener('click', () => { const date = day.getAttribute('data-date'); renderEventsForDate(date); });
+      });
+      document.getElementById('prevMonthBtn').addEventListener('click', () => {
+        if (month === 0) { currentCalendarMonth = 11; currentCalendarYear--; } else currentCalendarMonth--;
+        renderCalendarView();
+      });
+      document.getElementById('nextMonthBtn').addEventListener('click', () => {
+        if (month === 11) { currentCalendarMonth = 0; currentCalendarYear++; } else currentCalendarMonth++;
+        renderCalendarView();
+      });
+      document.getElementById('addEventBtn').addEventListener('click', () => openEventModal());
+      renderEventsForDate(new Date().toISOString().split('T')[0]);
+    }
+    function renderEventsForDate(dateStr) {
+      const container = document.getElementById('dayEvents');
+      if (!container) return;
+      const dayEvents = events.filter(e => e.date === dateStr);
+      if (dayEvents.length === 0) { container.innerHTML = '<div class="text-muted">No hay eventos para este día.</div>'; return; }
+      container.innerHTML = dayEvents.map(e => `<div class="module-card"><strong>${escapeHtml(e.title)}</strong><br>${escapeHtml(e.description || '')}<br><button class="btn btn-sm btn-secondary editEventBtn" data-id="${e.id}">✏️</button> <button class="btn btn-sm btn-danger deleteEventBtn" data-id="${e.id}">🗑️</button></div>`).join('');
+      document.querySelectorAll('.editEventBtn').forEach(btn => btn.addEventListener('click', (e) => { const id = btn.getAttribute('data-id'); openEventModal(dateStr, id); }));
+      document.querySelectorAll('.deleteEventBtn').forEach(btn => btn.addEventListener('click', (e) => { const id = btn.getAttribute('data-id'); if (confirm('¿Eliminar evento?')) { events = events.filter(ev => ev.id !== id); saveAllData(); renderCalendarView(); showToast('Evento eliminado', 'info'); } }));
+    }
+    function openEventModal(dateStr = null, eventId = null) {
+      const event = eventId ? events.find(e => e.id === eventId) : null;
+      const modalHtml = `<div class="modal-backdrop" id="modalBackdrop"><div class="modal"><div class="modal__header"><h3>${event ? 'Editar evento' : 'Nuevo evento'}</h3><button class="modal__close" id="closeModalBtn">&times;</button></div><div class="modal__body"><form id="eventForm"><div class="form-group"><label class="form-label">Título</label><input type="text" id="eventTitle" class="form-control" value="${escapeHtml(event?.title || '')}" required></div><div class="form-group"><label class="form-label">Fecha</label><input type="date" id="eventDate" class="form-control" value="${event?.date || dateStr || new Date().toISOString().split('T')[0]}" required></div><div class="form-group"><label class="form-label">Descripción</label><textarea id="eventDesc" class="form-control" rows="3">${escapeHtml(event?.description || '')}</textarea></div><div class="modal__footer"><button type="button" class="btn btn-secondary" id="cancelModalBtn">Cancelar</button><button type="submit" class="btn btn-primary">Guardar</button></div></form></div></div></div>`;
+      const container = document.getElementById('modalContainer');
+      container.innerHTML = modalHtml;
+      const close = () => container.innerHTML = '';
+      document.getElementById('closeModalBtn')?.addEventListener('click', close);
+      document.getElementById('cancelModalBtn')?.addEventListener('click', close);
+      document.getElementById('modalBackdrop')?.addEventListener('click', (e) => { if (e.target === document.getElementById('modalBackdrop')) close(); });
+      document.getElementById('eventForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const title = document.getElementById('eventTitle').value.trim();
+        const date = document.getElementById('eventDate').value;
+        const description = document.getElementById('eventDesc').value;
+        if (!title || !date) { showToast('Título y fecha son obligatorios', 'danger'); return; }
+        if (event) {
+          event.title = title; event.date = date; event.description = description;
+          const idx = events.findIndex(ev => ev.id === event.id); events[idx] = event;
+        } else {
+          events.push({ id: Date.now().toString(), title, date, description });
+        }
+        saveAllData(); close(); renderCalendarView(); showToast(event ? 'Evento actualizado' : 'Evento añadido', 'success');
+      });
+    }
+
+    // ========== CATEGORÍAS ==========
+    function renderCategoriesView() {
+      let html = `<h2>🏷️ Categorías personalizables</h2><div class="lists-container"><div class="list-card"><div class="list-title">💰 Ingresos</div><ul id="incomeCategoriesList"></ul><div class="form-group"><input type="text" id="newIncomeCat" class="form-control" placeholder="Nueva categoría"><button class="btn btn-sm btn-primary" id="addIncomeCatBtn">+ Añadir</button></div></div><div class="list-card"><div class="list-title">💸 Gastos</div><ul id="expenseCategoriesList"></ul><div class="form-group"><input type="text" id="newExpenseCat" class="form-control" placeholder="Nueva categoría"><button class="btn btn-sm btn-primary" id="addExpenseCatBtn">+ Añadir</button></div></div></div>`;
+      document.getElementById('dynamicView').innerHTML = html;
+      function refreshLists() {
+        const incomeList = document.getElementById('incomeCategoriesList');
+        const expenseList = document.getElementById('expenseCategoriesList');
+        if (incomeList) incomeList.innerHTML = customCategories.income.map(c => `<li>${c} <button class="btn btn-sm btn-danger deleteCatBtn" data-type="income" data-cat="${c}">🗑️</button></li>`).join('');
+        if (expenseList) expenseList.innerHTML = customCategories.expense.map(c => `<li>${c} <button class="btn btn-sm btn-danger deleteCatBtn" data-type="expense" data-cat="${c}">🗑️</button></li>`).join('');
+        document.querySelectorAll('.deleteCatBtn').forEach(btn => btn.addEventListener('click', (e) => {
+          const type = btn.getAttribute('data-type');
+          const cat = btn.getAttribute('data-cat');
+          if (type === 'income') customCategories.income = customCategories.income.filter(c => c !== cat);
+          else customCategories.expense = customCategories.expense.filter(c => c !== cat);
+          saveAllData(); refreshLists(); showToast('Categoría eliminada', 'info');
+        }));
+      }
+      document.getElementById('addIncomeCatBtn')?.addEventListener('click', () => {
+        const newCat = document.getElementById('newIncomeCat').value.trim();
+        if (newCat && !customCategories.income.includes(newCat)) { customCategories.income.push(newCat); saveAllData(); refreshLists(); document.getElementById('newIncomeCat').value = ''; showToast('Categoría añadida', 'success'); }
+        else showToast('Categoría ya existe o inválida', 'danger');
+      });
+      document.getElementById('addExpenseCatBtn')?.addEventListener('click', () => {
+        const newCat = document.getElementById('newExpenseCat').value.trim();
+        if (newCat && !customCategories.expense.includes(newCat)) { customCategories.expense.push(newCat); saveAllData(); refreshLists(); document.getElementById('newExpenseCat').value = ''; showToast('Categoría añadida', 'success'); }
+        else showToast('Categoría ya existe o inválida', 'danger');
+      });
+      refreshLists();
+    }
+
+    // ========== GESTIÓN DE USUARIOS ==========
+    function renderUsersView() {
+      const companyUsers = companyMembers.filter(m => m.companyId === currentCompanyId);
+      const userList = companyUsers.map(m => {
+        const user = users.find(u => u.id === m.userId);
+        if (!user) return '';
+        return `<div class="credit-card"><strong>${user.name} ${user.lastname || ''}</strong><br>Email: ${user.email}<br>Rol: ${m.role}<br><button class="btn btn-sm btn-danger removeUserBtn" data-id="${user.id}">Eliminar usuario</button></div>`;
+      }).join('');
+      let html = `<h2>👥 Miembros de la empresa</h2><div id="companyUsersList" class="loans-grid">${userList || '<div class="credit-card">No hay otros usuarios</div>'}</div><hr><h3>Invitar usuario</h3><div class="form-group"><label>Email del usuario</label><input type="email" id="inviteEmail" class="form-control"></div><button class="btn btn-primary" id="inviteUserBtn">Enviar invitación</button>`;
+      document.getElementById('dynamicView').innerHTML = html;
+      document.querySelectorAll('.removeUserBtn').forEach(btn => btn.addEventListener('click', () => {
+        const userId = btn.getAttribute('data-id');
+        if (userId === currentUser.id) { showToast('No puedes eliminarte a ti mismo', 'danger'); return; }
+        if (confirm('¿Eliminar este usuario de la empresa?')) { companyMembers = companyMembers.filter(m => !(m.companyId === currentCompanyId && m.userId === userId)); saveAllData(); renderUsersView(); showToast('Usuario eliminado', 'info'); }
+      }));
+      document.getElementById('inviteUserBtn').addEventListener('click', () => {
+        const email = document.getElementById('inviteEmail').value.trim();
+        const user = users.find(u => u.email === email);
+        if (!user) { showToast('Usuario no registrado', 'danger'); return; }
+        if (companyMembers.some(m => m.companyId === currentCompanyId && m.userId === user.id)) { showToast('El usuario ya es miembro', 'warning'); return; }
+        companyMembers.push({ companyId: currentCompanyId, userId: user.id, role: 'member' });
+        saveAllData(); renderUsersView(); showToast('Usuario añadido a la empresa', 'success');
+      });
+    }
+
+    // ========== MÓDULOS EMPRESA ==========
+    function renderBusinessModules() {
+      const modules = companyData[currentCompanyId]?.companyProfile?.modules || [];
+      let html = `<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;"><h2>🏭 Módulos empresariales</h2><button class="btn btn-primary" id="addModuleBtn">+ Añadir módulo</button></div><div id="businessModulesContainer">`;
+      if (modules.length === 0) html += `<div class="credit-card">No hay módulos activos. Añade módulos como "Nóminas", "Proveedores", "Clientes", etc.</div>`;
+      else {
+        modules.forEach(module => {
+          html += `<div class="module-card" data-id="${module.id}"><div class="module-header"><input type="text" class="module-title" value="${escapeHtml(module.name)}" data-id="${module.id}" data-field="name" placeholder="Nombre del módulo" style="font-size:1rem; font-weight:600; background:transparent; border:none; border-bottom:1px solid var(--border); margin-bottom:8px;"><div><button class="btn btn-sm btn-secondary editModuleContentBtn" data-id="${module.id}">✏️ Editar contenido</button><button class="btn btn-sm btn-danger deleteModuleBtn" data-id="${module.id}">🗑️ Eliminar</button></div></div><div class="module-content" data-id="${module.id}" contenteditable="false">${module.content || '<em>Haz clic en "Editar contenido" para escribir...</em>'}</div></div>`;
+        });
+      }
+      html += `</div>`;
+      document.getElementById('dynamicView').innerHTML = html;
+      document.querySelectorAll('.module-title').forEach(input => {
+        input.addEventListener('change', (e) => {
+          const id = input.getAttribute('data-id');
+          const newName = input.value;
+          const module = companyData[currentCompanyId].companyProfile.modules.find(m => m.id === id);
+          if (module && newName.trim()) { module.name = newName.trim(); saveAllData(); showToast('Título del módulo actualizado', 'success'); }
+        });
+      });
+      document.querySelectorAll('.editModuleContentBtn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const id = btn.getAttribute('data-id');
+          const contentDiv = document.querySelector(`.module-content[data-id="${id}"]`);
+          if (contentDiv) {
+            const isEditable = contentDiv.getAttribute('contenteditable') === 'true';
+            if (!isEditable) { contentDiv.setAttribute('contenteditable', 'true'); contentDiv.focus(); btn.textContent = '💾 Guardar contenido'; btn.classList.remove('btn-secondary'); btn.classList.add('btn-success'); }
+            else {
+              contentDiv.setAttribute('contenteditable', 'false');
+              const newContent = contentDiv.innerHTML;
+              const module = companyData[currentCompanyId].companyProfile.modules.find(m => m.id === id);
+              if (module) { module.content = newContent; saveAllData(); showToast('Contenido guardado', 'success'); }
+              btn.textContent = '✏️ Editar contenido'; btn.classList.remove('btn-success'); btn.classList.add('btn-secondary');
+            }
+          }
+        });
+      });
+      document.querySelectorAll('.deleteModuleBtn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const id = btn.getAttribute('data-id');
+          if (confirm('¿Eliminar este módulo?')) { companyData[currentCompanyId].companyProfile.modules = companyData[currentCompanyId].companyProfile.modules.filter(m => m.id !== id); saveAllData(); renderBusinessModules(); showToast('Módulo eliminado', 'info'); }
+        });
+      });
+      document.getElementById('addModuleBtn').addEventListener('click', () => {
+        const name = prompt('Nombre del nuevo módulo (ej: Nóminas, Proveedores, Clientes):');
+        if (name && name.trim()) {
+          if (!companyData[currentCompanyId].companyProfile.modules) companyData[currentCompanyId].companyProfile.modules = [];
+          companyData[currentCompanyId].companyProfile.modules.push({ id: Date.now().toString(), name: name.trim(), content: '' });
+          saveAllData(); renderBusinessModules(); showToast('Módulo añadido', 'success');
+        }
+      });
+    }
+
+    // ========== BACKUP ==========
+    function renderBackupView() {
+      const html = `<div><h2>💾 Copia de seguridad</h2><p>Descarga un archivo con todos los datos de esta empresa para restaurarlos más tarde.</p><button class="btn btn-primary" id="backupBtn">💾 Descargar backup</button><hr><h3>Restaurar backup</h3><input type="file" id="restoreFile" accept=".json" class="form-control"><button class="btn btn-secondary" id="restoreBtn" style="margin-top:10px;">📂 Restaurar</button><hr><h3>Exportar datos a CSV</h3><button class="btn btn-secondary" id="exportTransactionsBtn">📎 Exportar transacciones</button><button class="btn btn-secondary" id="exportInvoicesBtn2">📎 Exportar facturas</button></div>`;
+      document.getElementById('dynamicView').innerHTML = html;
+      document.getElementById('backupBtn')?.addEventListener('click', () => backupData());
+      document.getElementById('restoreBtn')?.addEventListener('click', () => {
+        const fileInput = document.getElementById('restoreFile');
+        if (fileInput.files.length) restoreBackup(fileInput.files[0]);
+        else showToast('Selecciona un archivo', 'danger');
+      });
+      document.getElementById('exportTransactionsBtn')?.addEventListener('click', () => exportToCSV(transactions, 'transacciones.csv'));
+      document.getElementById('exportInvoicesBtn2')?.addEventListener('click', () => {
+        const all = [...createdInvoices.map(i => ({ tipo: 'manual', numero: i.number, cliente: i.clientName, fecha: i.date, total: i.total })), ...uploadedInvoices.map(i => ({ tipo: 'subida', nombre: i.name, fecha: i.date }))];
+        exportToCSV(all, 'facturas.csv');
+      });
+    }
+
+    // ========== PERFIL ==========
+    function renderProfileView() {
+      const avatarUrl = currentUser.avatar || '';
+      const companyProfile = companyData[currentCompanyId]?.companyProfile || { type: 'individual' };
+      const isBusiness = companyProfile.type === 'business';
+      let html = `<div><div class="profile-avatar" id="avatarPreview" style="width:80px;height:80px;border-radius:50%;background:var(--accent);margin:0 auto;background-image: url('${avatarUrl}'); background-size: cover; background-position: center; display:flex;align-items:center;justify-content:center;font-size:2rem;">${!avatarUrl ? currentUser.name.charAt(0) : ''}</div><input type="file" id="avatarUpload" accept="image/*" style="display: none;"><button class="btn btn-secondary" id="changeAvatarBtn" style="margin: 0 auto 20px; display: block;">Cambiar foto</button><h3 style="text-align:center;">${currentUser.name} ${currentUser.lastname || ''}</h3><p style="text-align:center; color:var(--text-muted);">${currentUser.email || currentUser.phone}</p><hr><div class="form-group"><label>Nombre</label><input type="text" id="profileName" class="form-control" value="${currentUser.name}"></div><div class="form-group"><label>Apellidos</label><input type="text" id="profileLastname" class="form-control" value="${currentUser.lastname || ''}"></div><div class="form-group"><label>Email</label><input type="email" id="profileEmail" class="form-control" value="${currentUser.email || ''}"></div><div class="form-group"><label>Teléfono</label><input type="tel" id="profilePhone" class="form-control" value="${currentUser.phone || ''}"></div><hr><div class="form-group"><label>Tipo de perfil</label><select id="profileTypeSelect" class="form-control"><option value="individual" ${companyProfile.type === 'individual' ? 'selected' : ''}>Individual</option><option value="business" ${companyProfile.type === 'business' ? 'selected' : ''}>Empresa</option></select></div><div id="businessFields" style="${isBusiness ? 'display:block' : 'display:none'}"><div class="form-group"><label>Tipo de empresa</label><input type="text" id="businessType" class="form-control" value="${escapeHtml(companyProfile.businessType || '')}" placeholder="Ej: Tecnología, Consultoría..."></div><div class="form-group"><label>Especialización</label><input type="text" id="specialization" class="form-control" value="${escapeHtml(companyProfile.specialization || '')}" placeholder="Ej: Desarrollo software, Marketing..."></div><div class="form-group"><label>Número de empleados</label><input type="number" id="employees" class="form-control" value="${companyProfile.employees || 0}"></div><div class="form-group"><label>Capital social ($)</label><input type="number" step="0.01" id="capital" class="form-control" value="${companyProfile.capital || 0}"></div><div class="form-group"><label>Facturación anual ($)</label><input type="number" step="0.01" id="annualRevenue" class="form-control" value="${companyProfile.annualRevenue || 0}"></div><div class="form-group"><label>Forma jurídica</label><input type="text" id="legalForm" class="form-control" value="${escapeHtml(companyProfile.legalForm || '')}" placeholder="Ej: SL, SA, Autónomo..."></div><div class="form-group"><label>Sitio web</label><input type="url" id="website" class="form-control" value="${escapeHtml(companyProfile.website || '')}"></div><div class="form-group"><label>Teléfono adicional</label><input type="text" id="phone2" class="form-control" value="${escapeHtml(companyProfile.phone2 || '')}"></div><div class="form-group"><label>Dirección</label><textarea id="address" class="form-control" rows="2">${escapeHtml(companyProfile.address || '')}</textarea></div></div><button class="btn btn-primary" id="saveProfileBtn">Guardar cambios</button><button class="btn btn-danger" id="deleteAccountBtn" style="margin-top:16px;">Eliminar cuenta</button></div>`;
+      document.getElementById('dynamicView').innerHTML = html;
+      document.getElementById('changeAvatarBtn').addEventListener('click', () => document.getElementById('avatarUpload').click());
+      document.getElementById('avatarUpload').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            currentUser.avatar = ev.target.result;
+            saveAllData();
+            document.getElementById('avatarPreview').style.backgroundImage = `url('${currentUser.avatar}')`;
+            document.getElementById('avatarPreview').innerText = '';
+            const sidebarAvatar = document.getElementById('sidebarAvatar');
+            if (sidebarAvatar) { sidebarAvatar.style.backgroundImage = `url('${currentUser.avatar}')`; sidebarAvatar.innerText = ''; }
+            showToast('Foto de perfil actualizada', 'success');
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+      const profileTypeSelect = document.getElementById('profileTypeSelect');
+      const businessFields = document.getElementById('businessFields');
+      profileTypeSelect.addEventListener('change', () => { businessFields.style.display = profileTypeSelect.value === 'business' ? 'block' : 'none'; });
+      document.getElementById('saveProfileBtn').addEventListener('click', () => {
+        currentUser.name = document.getElementById('profileName').value;
+        currentUser.lastname = document.getElementById('profileLastname').value;
+        currentUser.email = document.getElementById('profileEmail').value;
+        currentUser.phone = document.getElementById('profilePhone').value;
+        const idx = users.findIndex(u => u.id === currentUser.id);
+        if (idx !== -1) users[idx] = currentUser;
+        const newProfileType = profileTypeSelect.value;
+        companyData[currentCompanyId].companyProfile = {
+          type: newProfileType,
+          businessType: document.getElementById('businessType')?.value || '',
+          specialization: document.getElementById('specialization')?.value || '',
+          employees: parseInt(document.getElementById('employees')?.value) || 0,
+          capital: parseFloat(document.getElementById('capital')?.value) || 0,
+          annualRevenue: parseFloat(document.getElementById('annualRevenue')?.value) || 0,
+          legalForm: document.getElementById('legalForm')?.value || '',
+          website: document.getElementById('website')?.value || '',
+          phone2: document.getElementById('phone2')?.value || '',
+          address: document.getElementById('address')?.value || '',
+          modules: companyData[currentCompanyId].companyProfile.modules || []
+        };
+        const companyIdx = companies.findIndex(c => c.id === currentCompanyId);
+        if (companyIdx !== -1) companies[companyIdx].profileType = newProfileType;
+        saveAllData();
+        renderCurrentView();
+        showToast('Perfil actualizado', 'success');
+      });
+      document.getElementById('deleteAccountBtn').addEventListener('click', () => {
+        if (confirm('¿Eliminar cuenta permanentemente? Se borrarán todos tus datos.')) {
+          users = users.filter(u => u.id !== currentUser.id);
+          currentUser = null;
+          saveAllData();
+          renderApp();
+          showToast('Cuenta eliminada', 'info');
+        }
+      });
+    }
+
+    function renderTransactionsPage() { renderDashboard(); }
+    
+    function renderCurrentView() {
+      const userRole = companyMembers.find(m => m.userId === currentUser.id && m.companyId === currentCompanyId)?.role || 'member';
+      const isAdmin = userRole === 'admin';
+      const companyProfile = companyData[currentCompanyId]?.companyProfile || { type: 'individual' };
+      const isBusiness = companyProfile.type === 'business';
+      const views = {
+        dashboard: renderDashboard,
+        transactions: renderTransactionsPage,
+        cards: renderCardsView,
+        invoices: renderInvoicesView,
+        calendar: renderCalendarView,
+        budget: renderBudgetView,
+        goals: renderGoalsView,
+        loans: renderLoansView,
+        categories: renderCategoriesView,
+        backup: renderBackupView,
+        profile: renderProfileView
+      };
+      if (isAdmin) views.users = renderUsersView;
+      if (isBusiness) views.businessModules = renderBusinessModules;
+      (views[currentPage] || renderDashboard)();
+      const titles = {
+        dashboard:'Dashboard', transactions:'Transacciones', cards:'Tarjetas', invoices:'Facturas',
+        calendar:'Agenda', budget:'Presupuestos', goals:'Metas de ahorro', loans:'Préstamos',
+        categories:'Categorías', users:'Usuarios', businessModules:'Módulos empresa', backup:'Copia de seguridad', profile:'Perfil'
+      };
+      document.getElementById('pageTitle').innerText = titles[currentPage] || 'Dashboard';
+      document.querySelectorAll('.sidebar__link').forEach(link => {
+        const page = link.getAttribute('data-page');
+        if (page === currentPage) link.classList.add('active');
+        else link.classList.remove('active');
+      });
+    }
+
+    // ========== INICIALIZACIÓN ==========
+    function initTheme() {
+      document.body.classList.add(currentTheme);
+      const themeToggle = document.getElementById('themeToggle');
+      const themeMenu = document.getElementById('themeMenu');
+      if (themeToggle && themeMenu) {
+        themeToggle.addEventListener('click', () => {
+          const isVisible = themeMenu.style.display === 'flex';
+          themeMenu.style.display = isVisible ? 'none' : 'flex';
+          themeToggle.classList.toggle('open', !isVisible);
+        });
+        document.querySelectorAll('.theme-option').forEach(opt => {
+          opt.addEventListener('click', () => {
+            const theme = opt.getAttribute('data-theme');
+            document.body.classList.remove('cream','dark','blue','cyan','purple');
+            document.body.classList.add(theme);
+            localStorage.setItem('theme', theme);
+            currentTheme = theme;
+            themeMenu.style.display = 'none';
+            themeToggle.classList.remove('open');
+          });
+        });
+        document.addEventListener('click', (e) => { if (!themeToggle.contains(e.target) && !themeMenu.contains(e.target)) { themeMenu.style.display = 'none'; themeToggle.classList.remove('open'); } });
+      }
+    }
+
+    function setupNavigation() {
+      document.querySelectorAll('.sidebar__link').forEach(link => {
+        link.addEventListener('click', (e) => { e.preventDefault(); const page = link.getAttribute('data-page'); if (page) { currentPage = page; renderCurrentView(); } });
+      });
+      document.getElementById('mobileMenuToggle')?.addEventListener('click', () => { document.getElementById('sidebar').classList.toggle('open'); });
+      document.getElementById('globalSearch')?.addEventListener('input', (e) => {
+        const term = e.target.value.toLowerCase();
+        if (currentPage === 'dashboard' || currentPage === 'transactions') {
+          const rows = document.querySelectorAll('#transactionsTbody tr');
+          rows.forEach(row => row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none');
+        }
+      });
+    }
+
+    document.addEventListener('click', (e) => { if (e.target.id === 'newTransactionBtn' || e.target.closest('#newTransactionBtn')) openTransactionModal(); });
+
+    loadAllData();
+    renderApp();
+  })();
+</script>
+</body>
+</html>
