@@ -5,7 +5,7 @@
 
 **FinManager PRO** es una aplicación web integral para la gestión de finanzas personales y empresariales. Diseñada para funcionar completamente en el navegador, almacena todos los datos de forma local (sin necesidad de backend), ofreciendo un dashboard potente, múltiples módulos y una experiencia totalmente personalizable.
 
-🔗 **Demo en vivo:** [https://sinsreiyjs.github.io/finmanager-pro/](https://sinsreiyjs.github.io/finmanager-pro/) *(activa después de desplegar en GitHub Pages)*
+🔗 **Demo en vivo:** [http://127.0.0.1:5001/) *(activa después de desplegar en GitHub Pages)*
 
 ## ✨ Características principales
 
