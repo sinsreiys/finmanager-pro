@@ -1,7 +1,7 @@
 # FinManager PRO
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![made-with-javascript](https://img.shields.io/badge/Made%20with-JavaScript-1f425f.svg)](https://www.javascript.com)
+[![made-with-javascript](file:///C:/Users/locas/OneDrive/Escritorio/financial-managment-prt/backend/index.html)](https://www.javascript.com)
 
 **FinManager PRO** es una aplicación web integral para la gestión de finanzas personales y empresariales. Diseñada para funcionar completamente en el navegador, almacena todos los datos de forma local (sin necesidad de backend), ofreciendo un dashboard potente, múltiples módulos y una experiencia totalmente personalizable.
 
